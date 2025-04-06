@@ -7,9 +7,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
-use Spatie\Permission\Traits\HasRoles; //oswaldo
-use Spatie\Permission\Models\Role; //oswaldo Importa el modelo Role
-use Spatie\Permission\Models\Permission; //oswaldo Importa el modelo Permission
+use Spatie\Permission\Traits\HasRoles; 
+use Spatie\Permission\Models\Role; 
+use Spatie\Permission\Models\Permission; 
 
 class User extends Authenticatable
 {

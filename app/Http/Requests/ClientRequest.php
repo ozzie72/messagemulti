@@ -26,9 +26,9 @@ class ClientRequest extends FormRequest
 			'ip' => 'required|string',
 			'port' => 'required|string',
 			'server_user' => 'string',
-			'server_pass' => 'string'
+			'server_pass' => 'string',
             'divition_id' => 'required|exists:divitions,id',
-            'department_id' => 'required|exists:departments,id',
+            'department_id' => 'required|exists:departments,id'
         ];
     }
 }
