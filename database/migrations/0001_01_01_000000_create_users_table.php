@@ -42,12 +42,10 @@ return new class extends Migration
             $table->string('email',100)->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password', 128);
-// 04-04-2025 ini
             $table->timestamp('last_session')->nullable();
             $table->string('ip_connect');
             $table->boolean('is_admin')->default(0);
             $table->tinyInteger('status')->nullable()->default(1);
-
             $table->integer('type'); // 1 => TotalTexto Admin - 2 => Cliente Admin - 3 => Cliente User
             $table->char('user_status',1); // A => Activo - B => Bloqueado - P => Pendiente
             $table->char('client_status',1); // A => Activo - I => Inactivo
@@ -55,10 +53,8 @@ return new class extends Migration
             $table->timestamp('failed_date')->nullable(); // Fecha del Ultimo Intento
             $table->integer('failed_count')->nullable(); // Cantidad Intentos
             $table->string('remember_token');
-
             $table->boolean('confirmed')->default(0);
             $table->integer('confirmation_code')->nullable();
-// fin
             $table->rememberToken();
             $table->timestamps();
         });
@@ -77,12 +73,6 @@ return new class extends Migration
             $table->string('password', 128);
             $table->integer('type'); // 1 => TotalTexto Admin - 2 => Cliente Admin - 3 => Cliente User
             $table->char('user_status',1); // A => Activo - B => Bloqueado - P => Pendiente
-            $table->char('client_status',1); // A => Activo - I => Inactivo
-            $table->timestamp('password_change'); // Fecha del Ultimo Cambio
-            $table->timestamp('failed_date')->nullable(); // Fecha del Ultimo Intento
-            $table->integer('failed_count')->nullable(); // Cantidad Intentos
-            $table->string('remember_token');
-            //$table->rememberToken();
             $table->timestamps();
 
         });
