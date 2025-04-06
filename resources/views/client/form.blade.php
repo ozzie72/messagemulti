@@ -1,10 +1,4 @@
-
-
 <div class="row padding-1 p-1">
-
-
-
-    
     
     <div class="col-md-6">
 
@@ -80,7 +74,7 @@
         <div class="form-group">
             <label for="divition_id">Sucursal</label>
             <select class="form-control" id="divition_id" name="divition_id" required>
-                <option value="">Select a Divition</option>
+                <option value="">Seleccione una Sucursal</option>
                 @foreach($divitions as $divition)
                     <option value="{{ $divition->id }}">{{ $divition->name }}</option>
                 @endforeach
@@ -90,13 +84,9 @@
         <div class="form-group">
             <label for="department_id">Departmento</label>
             <select class="form-control" id="department_id" name="department_id" required disabled>
-                <option value="">Select a Department</option>
+                <option value="">Seleccione un Departmentamento</option>
             </select>
         </div>
-
-
-
-
 
     </div>
     <div class="col-md-12 mt20 mt-2">
@@ -121,7 +111,7 @@ document.getElementById('divition_id').addEventListener('change', function() {
                 return response.json();
             })
             .then(data => {
-                departmentSelect.innerHTML = '<option value="">Select a Department</option>';
+                departmentSelect.innerHTML = '<option value="">Seleccione un  Departmento</option>';
                 data.forEach(department => {
                     const option = document.createElement('option');
                     option.value = department.id;
@@ -135,14 +125,8 @@ document.getElementById('divition_id').addEventListener('change', function() {
             });
     } else {
         departmentSelect.disabled = true;
-        departmentSelect.innerHTML = '<option value="">Select a Department</option>';
+        departmentSelect.innerHTML = '<option value="">Seleccione un Departmento</option>';
     }
 });
 
-
-
-
-
-
-    
 </script>

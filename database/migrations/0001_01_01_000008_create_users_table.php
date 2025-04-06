@@ -15,25 +15,24 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('client_id')->constrained('clients')->onDelete('cascade'); // 04-04-2025
+            $table->foreignId('client_id')->constrained('clients')->onDelete('cascade')->default(1);
             $table->string('name');
-            $table->string('last_name', 50); //05-04-2025
-            $table->string('username', 50)->unique(); //05-04-2025
-            $table->string('phone', 12); //05-04-2025
+            $table->string('last_name', 50)->nullable();
+            $table->string('username', 50)->unique()->nullable();
+            $table->string('phone', 12)->nullable();
             $table->string('email',100)->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password', 128);
             $table->timestamp('last_session')->nullable();
-            $table->string('ip_connect');
+            $table->string('ip_connect')->nullable();
             $table->boolean('is_admin')->default(0);
             $table->tinyInteger('status')->nullable()->default(1);
-            $table->integer('type'); // 1 => TotalTexto Admin - 2 => Cliente Admin - 3 => Cliente User
-            $table->char('user_status',1); // A => Activo - B => Bloqueado - P => Pendiente
-            $table->char('client_status',1); // A => Activo - I => Inactivo
-            $table->timestamp('password_change'); // Fecha del Ultimo Cambio
+            $table->integer('type')->default(3); // 1 => TotalTexto Admin - 2 => Cliente Admin - 3 => Cliente User
+            $table->char('user_status',1)->default('P'); // A => Activo - B => Bloqueado - P => Pendiente
+            $table->char('client_status',1)->default('A');; // A => Activo - I => Inactivo
+            $table->timestamp('password_change')->nullable(); // Fecha del Ultimo Cambio
             $table->timestamp('failed_date')->nullable(); // Fecha del Ultimo Intento
             $table->integer('failed_count')->nullable(); // Cantidad Intentos
-            $table->string('remember_token');
             $table->boolean('confirmed')->default(0);
             $table->integer('confirmation_code')->nullable();
             $table->rememberToken();

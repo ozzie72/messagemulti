@@ -116,8 +116,9 @@ class ClientController extends Controller
     public function edit($id): View
     {
         $client = Client::find($id);
+        $divitions = Divition::all(); // Cargar todas las divisiones para el select
 
-        return view('client.edit', compact('client'));
+        return view('client.edit', compact('client', 'divitions'));
     }
 
     /**

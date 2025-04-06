@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB; // Importa la clase DB
 
 return new class extends Migration
 {
@@ -18,6 +19,14 @@ return new class extends Migration
             $table->string('description')->nullable();
             $table->timestamps();
         });
+
+        // Insertar el registro por defecto
+        DB::table('divitions')->insert([
+            'name' => 'División Principal',
+            'description' => 'División por defecto creada durante la migración.',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
 
     }
 
