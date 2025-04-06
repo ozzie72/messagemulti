@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-//use Spatie\Permission\Models\Role; // Importar el modelo Role /////////////////////////
+use Spatie\Permission\Models\Role; // Importar el modelo Role /////////////////////////
 
 return new class extends Migration
 {
@@ -13,25 +13,6 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('clients', function (Blueprint $table) {
-            $table->bigIncrements('id'); // Cambiado a bigIncrements
-            $table->string('name', 50)->unique();
-            $table->string('ip', 15);
-            $table->string('port', 6);
-            $table->string('server_user', 50)->nullable();
-            $table->string('server_pass', 50)->nullable();
-            $table->string('image');
-            $table->tinyInteger('status')->nullable()->default(1);
-            $table->foreignId('divition_id')->constrained();
-            $table->foreignId('department_id')->constrained();
-            $table->timestamps();
-        });
-
-
-
-
-
-
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->foreignId('client_id')->constrained('clients')->onDelete('cascade'); // 04-04-2025
@@ -57,37 +38,14 @@ return new class extends Migration
             $table->integer('confirmation_code')->nullable();
             $table->rememberToken();
             $table->timestamps();
+            $table->unsignedBigInteger('country_id')->nullable();
+            $table->foreign('country_id')->references('id')->on('countries')->onDelete('set null');
+            $table->unsignedBigInteger('state_id')->nullable();
+            $table->foreign('state_id')->references('id')->on('states')->onDelete('set null');
+            $table->unsignedBigInteger('city_id')->nullable();
+            $table->foreign('city_id')->references('id')->on('cities')->onDelete('set null');
         });
-
-
-
-
-
-        Schema::create('users', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('name', 50);
-            $table->string('last_name', 50);
-            $table->string('username', 50)->unique();
-            $table->string('phone', 12);
-            $table->string('email', 100)->unique();
-            $table->string('password', 128);
-            $table->integer('type'); // 1 => TotalTexto Admin - 2 => Cliente Admin - 3 => Cliente User
-            $table->char('user_status',1); // A => Activo - B => Bloqueado - P => Pendiente
-            $table->timestamps();
-
-        });
-
-
-
-
-
-
-
-
-
-
-
-
+        
         Schema::create('password_reset_tokens', function (Blueprint $table) {
             $table->string('email')->primary();
             $table->string('token');
@@ -103,32 +61,6 @@ return new class extends Migration
             $table->integer('last_activity')->index();
         });
 
-        Schema::create('departments', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->string('description')->nullable();
-            $table->foreignId('divition_id')->constrained();
-            $table->timestamps();
-        });
-
-        Schema::create('divitions', function (Blueprint $table) { 
-            $table->id();
-            $table->string('name');
-            $table->string('description')->nullable();
-            $table->timestamps();
-        });
-
-/*
-        // Asignar roles
-        $adminRole = Role::findByName('admin'); // Obtener el rol 'admin'
-        $usuarioAdmin->assignRole($adminRole); // Asignar el rol al usuario
-
-        $adminTotaltextoRole = Role::findByName('admin-totaltexto'); // Obtener el rol 'admin-totaltexto'
-        $usuarioAdminTotaltexto->assignRole($adminTotaltextoRole); // Asignar el rol al usuario
-
-        $superAdminRole = Role::findByName('superadmin'); // Obtener el rol 'superadmin'
-        $usuarioSuperadmin->assignRole($superAdminRole); // Asignar el rol al usuario   
-        */     
     }
 
     /**
