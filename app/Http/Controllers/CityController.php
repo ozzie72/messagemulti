@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\City;
+use App\Models\State;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use App\Http\Requests\CityRequest;
@@ -28,8 +29,9 @@ class CityController extends Controller
     public function create(): View
     {
         $city = new City();
+        $states = State::all(); 
 
-        return view('city.create', compact('city'));
+        return view('city.create', compact('city', 'states'));
     }
 
     /**
@@ -59,8 +61,9 @@ class CityController extends Controller
     public function edit($id): View
     {
         $city = City::find($id);
+        $states = State::all(); 
 
-        return view('city.edit', compact('city'));
+        return view('city.edit', compact('city', 'states'));
     }
 
     /**

@@ -1,6 +1,6 @@
 @extends('components.layouts.main')
 
-@section('template_title')
+@section('title')
     {{ $divition->name ?? __('Show') . " " . __('Divition') }}
 @endsection
 

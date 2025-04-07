@@ -1,7 +1,7 @@
 @extends('components.layouts.main')
 
-@section('template_title')
-    Cities
+@section('title')
+    {{ __('Cities') }}
 @endsection
 
 @section('content')
@@ -37,7 +37,7 @@
                                         <th>No</th>
                                         
 									<th >Name</th>
-									<th >State Id</th>
+									<th >{{ __('State') }}</th>
 
                                         <th></th>
                                     </tr>
@@ -48,7 +48,7 @@
                                             <td>{{ ++$i }}</td>
                                             
 										<td >{{ $city->name }}</td>
-										<td >{{ $city->state_id }}</td>
+										<td >{{ $city->state->name }}</td>
 
                                             <td>
                                                 <form action="{{ route('cities.destroy', $city->id) }}" method="POST">

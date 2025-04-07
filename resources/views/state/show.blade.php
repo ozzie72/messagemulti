@@ -1,6 +1,6 @@
 @extends('components.layouts.main')
 
-@section('template_title')
+@section('title')
     {{ $state->name ?? __('Show') . " " . __('State') }}
 @endsection
 
@@ -11,7 +11,7 @@
                 <div class="card">
                     <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
                         <div class="float-left">
-                            <span class="card-title">{{ __('Show') }} State</span>
+                            <span class="card-title">{{ __('Show') }} {{ __('State') }}</span>
                         </div>
                         <div class="float-right">
                             <a class="btn btn-primary btn-sm" href="{{ route('states.index') }}"> {{ __('Back') }}</a>
@@ -25,8 +25,8 @@
                                     {{ $state->name }}
                                 </div>
                                 <div class="form-group mb-2 mb20">
-                                    <strong>Country Id:</strong>
-                                    {{ $state->country_id }}
+                                    <strong>{{ __('Country') }}</strong>
+                                    {{ $state->country->name }}
                                 </div>
 
                     </div>

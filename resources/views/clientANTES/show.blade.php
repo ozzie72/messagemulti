@@ -1,6 +1,6 @@
 @extends('components.layouts.main')
 
-@section('template_title')
+@section('title')
     {{ $client->name ?? __('Show') . " " . __('Client') }}
 @endsection
 

@@ -1,7 +1,7 @@
 @extends('components.layouts.main')
 
-@section('template_title')
-    Countries
+@section('title')
+    {{ __('Country') }}
 @endsection
 
 @section('content')
