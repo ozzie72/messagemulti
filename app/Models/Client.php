@@ -62,11 +62,11 @@ class Client extends Model
     }
 
     // Relación con Divition (un cliente pertenece a una división)
-        public function divition()
-        {
-            return $this->belongsTo(Divition::class);
-        }
-    
-    
+    public function divition()
+    {
+        return $this->belongsTo(Divition::class);
+    }
+
+
     
 }

@@ -30,7 +30,7 @@ class CitieSeeder extends Seeder
         // 4. ANALIZAR LA ESTRUCTURA REAL DEL JSON
         echo "ℹ Analizando estructura del JSON...\n";
         
-        // Opción 1: Si los países están directamente en el array principal
+        // Opción 1: Si las cuidades están directamente en el array principal
         if (isset($data[0]['id']) && isset($data[0]['name'])) {
             $citiesData = $data;
             echo "• Estructura detectada: Array directo de países\n";
@@ -86,8 +86,8 @@ class CitieSeeder extends Seeder
 
         echo "\nRESULTADO FINAL:\n";
         echo "────────────────\n";
-        echo "• Países en JSON: " . count($citiesData) . "\n";
-        echo "• Países insertados: $insertados\n";
+        echo "• Ciudades en JSON: " . count($citiesData) . "\n";
+        echo "• Ciudades insertados: $insertados\n";
 
     }
 }
