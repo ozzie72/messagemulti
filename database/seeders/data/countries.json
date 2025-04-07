@@ -118,7 +118,7 @@
         {"id":"114","name":"Kenya","code":"KE","created_at":"2025-04-03 00:00:00","updated_at":"2025-04-03 00:00:00"},
         {"id":"115","name":"Kiribati","code":"KI","created_at":"2025-04-03 00:00:00","updated_at":"2025-04-03 00:00:00"},
         {"id":"116","name":"Corea del Sur","code":"CS","created_at":"2025-04-03 00:00:00","updated_at":"2025-04-03 00:00:00"},
-        {"id":"117","name":"Corea del Norte","code":"CN","created_at":"2025-04-03 00:00:00","updated_at":"2025-04-03 00:00:00"},
+        {"id":"117","name":"Corea del Norte","code":"KP","created_at":"2025-04-03 00:00:00","updated_at":"2025-04-03 00:00:00"},
         {"id":"118","name":"Kuwait","code":"KW","created_at":"2025-04-03 00:00:00","updated_at":"2025-04-03 00:00:00"},
         {"id":"119","name":"Kyrgyzstan","code":"KG","created_at":"2025-04-03 00:00:00","updated_at":"2025-04-03 00:00:00"},
         {"id":"120","name":"Lao People's Democratic R","code":"LA","created_at":"2025-04-03 00:00:00","updated_at":"2025-04-03 00:00:00"},
@@ -249,7 +249,6 @@
         {"id":"245","name":"Zambia","code":"ZM","created_at":"2025-04-03 00:00:00","updated_at":"2025-04-03 00:00:00"},
         {"id":"246","name":"Zimbabwe","code":"ZW","created_at":"2025-04-03 00:00:00","updated_at":"2025-04-03 00:00:00"},
         {"id":"247","name":"Islas Aland ","code":"AX","created_at":"2025-04-03 00:00:00","updated_at":"2025-04-03 00:00:00"},
-        {"id":"248","name":"Guinea","code":"GN","created_at":"2025-04-03 00:00:00","updated_at":"2025-04-03 00:00:00"},
         {"id":"249","name":"No Especificado","code":"--","created_at":"2025-04-03 00:00:00","updated_at":"2025-04-03 00:00:00"}        
 
       ]

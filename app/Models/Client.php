@@ -21,6 +21,8 @@ use Illuminate\Database\Eloquent\Model;
  * @property Campaign[] $campaigns
  * @property PhoneList[] $phoneLists
  * @property User[] $users
+ * @property Divition[] $divition
+ * @property Department[] $department
  * @package App
  * @mixin \Illuminate\Database\Eloquent\Builder
  */
@@ -65,6 +67,12 @@ class Client extends Model
     public function divition()
     {
         return $this->belongsTo(Divition::class);
+    }
+
+    // Relación con DivDepartment (un cliente pertenece a un departamento)
+    public function department()
+    {
+        return $this->belongsTo(Department::class);
     }
 
 

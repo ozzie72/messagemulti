@@ -30,10 +30,10 @@ class StateSeeder extends Seeder
         // 4. ANALIZAR LA ESTRUCTURA REAL DEL JSON
         echo "ℹ Analizando estructura del JSON...\n";
         
-        // Opción 1: Si los países están directamente en el array principal
+        // Opción 1: Si los estados están directamente en el array principal
         if (isset($data[0]['id']) && isset($data[0]['name'])) {
             $estadosData = $data;
-            echo "• Estructura detectada: Array directo de países\n";
+            echo "• Estructura detectada: Array directo de estados\n";
         }
         // Opción 2: Si están dentro de una propiedad 'data'
         elseif (isset($data[0]['data'])) {
@@ -86,8 +86,8 @@ class StateSeeder extends Seeder
 
         echo "\nRESULTADO FINAL:\n";
         echo "────────────────\n";
-        echo "• Países en JSON: " . count($estadosData) . "\n";
-        echo "• Países insertados: $insertados\n";
+        echo "• Estados en JSON: " . count($estadosData) . "\n";
+        echo "• Estados insertados: $insertados\n";
 
     }
 }

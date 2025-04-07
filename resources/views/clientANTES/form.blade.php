@@ -84,7 +84,7 @@
         <div class="form-group">
             <label for="department_id">Departmento</label>
             <select class="form-control" id="department_id" name="department_id" required disabled>
-                <option value="">Seleccione un Departmentamento</option>
+                <option value="">Seleccione un Departamento</option>
             </select>
         </div>
 
