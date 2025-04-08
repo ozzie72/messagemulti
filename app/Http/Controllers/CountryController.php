@@ -52,6 +52,8 @@ class CountryController extends Controller
     {
         Country::create($request->validated());
 
+        \App\Helpers\AuditHelper::log('Creación de nuevo registro: ' . $request->name);
+
         return Redirect::route('countries.index')
             ->with('success', 'Country created successfully.');
     }
