@@ -9,12 +9,10 @@ use Illuminate\Http\Request;
 use App\Http\Requests\CountryRequest;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
+use App\Helpers\AuditHelper;
 
 class CountryController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index(Request $request)
     {
         if ($request->ajax()) {
@@ -32,56 +30,53 @@ class CountryController extends Controller
         }
 
         return view('country.index');
-
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create(): View
     {
         $country = new Country();
-
         return view('country.create', compact('country'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(CountryRequest $request): RedirectResponse
     {
-        Country::create($request->validated());
+        $country = Country::create($request->validated());
+
+        AuditHelper::log('País creado', [
+            'action' => 'create',
+            'country_id' => $country->id,
+            'data' => $country->toArray(),
+            'section' => 'countries'
+        ]);
 
         return Redirect::route('countries.index')
             ->with('success', 'Country created successfully.');
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show($id): View
     {
-        $country = Country::find($id);
-
+        $country = Country::findOrFail($id);
         return view('country.show', compact('country'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit($id): View
     {
-        $country = Country::find($id);
-
+        $country = Country::findOrFail($id);
         return view('country.edit', compact('country'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(CountryRequest $request, Country $country): RedirectResponse
     {
+        $oldData = $country->toArray();
         $country->update($request->validated());
+
+        AuditHelper::log('País actualizado', [
+            'action' => 'update',
+            'country_id' => $country->id,
+            'old_data' => $oldData,
+            'new_data' => $country->fresh()->toArray(),
+            'section' => 'countries'
+        ]);
 
         return Redirect::route('countries.index')
             ->with('success', 'Country updated successfully');
@@ -92,6 +87,13 @@ class CountryController extends Controller
         $country = Country::find($id);
         
         if(!$country) {
+            AuditHelper::log('Intento de eliminar país inexistente', [
+                'action' => 'delete_error',
+                'country_id' => $id,
+                'error' => 'Country not found',
+                'section' => 'countries'
+            ], 'warning');
+
             if(request()->ajax()) {
                 return response()->json(['error' => 'Country not found'], 404);
             }
@@ -99,7 +101,14 @@ class CountryController extends Controller
                 ->with('error', 'Country not found');
         }
 
+        $countryData = $country->toArray();
         $country->delete();
+
+        AuditHelper::log('País eliminado', [
+            'action' => 'delete',
+            'deleted_data' => $countryData,
+            'section' => 'countries'
+        ]);
 
         if(request()->ajax()) {
             return response()->json(['success' => 'Country deleted successfully']);
