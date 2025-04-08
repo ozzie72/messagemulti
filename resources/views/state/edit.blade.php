@@ -11,7 +11,10 @@
 
                 <div class="card card-default">
                     <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
-                        <span class="card-title">{{ __('Update') }} {{ __('State') }}</span>
+                        <div class="float-left">
+                            <span class="card-title">{{ __('Update') }} {{ __('State') }}</span>
+                        </div>
+
                         <div class="float-right">
                             <a class="btn btn-primary btn-sm" href="{{ route('states.index') }}"> {{ __('Back') }}</a>
                         </div>

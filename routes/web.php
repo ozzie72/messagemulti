@@ -13,7 +13,7 @@ use App\Http\Controllers\CountryController;
 use App\Http\Controllers\StateController; 
 use App\Http\Controllers\CityController; 
 
-use App\Models\Divition;
+//use App\Models\Divition;
 use App\Models\Department;
 
 
@@ -27,10 +27,7 @@ Route::view('dashboard', 'dashboard')
 
 Route::middleware(['auth'])->group(function () {
 
-
     Route::redirect('settings', 'settings/profile');
-
- //   Route::resource('users', UserController::class); //oswaldo
 
     Route::resource('countries', CountryController::class);
 
@@ -38,7 +35,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::resource('cities', CityController::class);
 
-    Route::resource('users', UserController::class)->except(['show']);
+    Route::resource('users', UserController::class);
 
     Route::resource('divitions', DivitionController::class);
 
@@ -51,7 +48,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('settings/profile', Profile::class)->name('settings.profile');
     Route::get('settings/password', Password::class)->name('settings.password');
     Route::get('settings/appearance', Appearance::class)->name('settings.appearance');
-
    
     Route::get('divitions/{divition}/departments', function ($divitionId) {
         return response()->json(

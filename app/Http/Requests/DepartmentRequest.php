@@ -22,6 +22,7 @@ class DepartmentRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'divition_id' => 'required|exists:divitions,id',
 			'name' => 'required|string',
 			'description' => 'string',
         ];

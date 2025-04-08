@@ -26,7 +26,7 @@ class Department extends Model
      *
      * @var array<int, string>
      */
-    protected $fillable = ['name', 'description'];
+    protected $fillable = ['divition_id', 'name', 'description'];
 
     // Relación con Divition (un departamento pertenece a una división)
     public function divition()

@@ -22,8 +22,8 @@ return new class extends Migration
 
         // Insertar el registro por defecto
         DB::table('divitions')->insert([
-            'name' => 'División Principal',
-            'description' => 'División por defecto creada durante la migración.',
+            'name' => 'Sucursal Principal',
+            'description' => 'Sucursal por defecto creada durante la migración.',
             'created_at' => now(),
             'updated_at' => now(),
         ]);

@@ -1,7 +1,7 @@
 @extends('components.layouts.main')
 
 @section('title')
-    {{ __('Departments') }}
+    Clients
 @endsection
 
 @section('content')
@@ -13,11 +13,11 @@
                         <div style="display: flex; justify-content: space-between; align-items: center;">
 
                             <span id="card_title">
-                                {{ __('Departments') }}
+                                {{ __('Clients') }}
                             </span>
 
                              <div class="float-right">
-                                <a href="{{ route('departments.create') }}" class="btn btn-primary btn-sm float-right"  data-placement="left">
+                                <a href="{{ route('clients.create') }}" class="btn btn-primary btn-sm float-right"  data-placement="left">
                                   {{ __('Create New') }}
                                 </a>
                               </div>
@@ -31,13 +31,15 @@
 
                     <div class="card-body bg-white">
                         <div class="table-responsive">
-                            <table class="table table-striped table-hover" id="departments-table">
+                            <table class="table table-striped table-hover" id="clients-table">
                                 <thead class="thead">
                                     <tr>
                                         <th>No</th>
-                                        <th >{{ __('Divition') }}</th>
-                                        <th >{{ __('Name') }}</th>
-                                        <th >{{ __('Description') }}</th>
+                                        <th >Name</th>
+                                        <th >Ip</th>
+                                        <th >Port</th>
+                                        <th >Server User</th>
+                                        <th >Status</th>
                                         <th></th>
                                     </tr>
                                 </thead>
@@ -51,24 +53,25 @@
         </div>
     </div>
 
-
-
-
     <script>
     $(document).ready(function() {
         // Inicializar DataTable
-        var table = $('#departments-table').DataTable({
+        var table = $('#clients-table').DataTable({
             language: {url: "https://cdn.datatables.net/plug-ins/1.13.7/i18n/es-ES.json"},
             processing: true,
             serverSide: true,
             ajax: {
-                url: "{{ route('departments.index') }}",
+                url: "{{ route('clients.index') }}",
                 type: 'GET'
             },
             columns: [
                 { data: 'id', name: 'id' },
-                { data: 'divition.name', name: 'divition.name' },
                 { data: 'name', name: 'name' },
+                { data: 'ip', name: 'ip' },
+                { data: 'port', name: 'port' },
+
+                { data: 'server_user', name: 'server_user' },
+                { data: 'status', name: 'status' },
                 { 
                     data: 'action', 
                     name: 'action', 
@@ -79,14 +82,14 @@
             ]
         });
 
-        // Eliminar país con mejor manejo
+        // Eliminar cliente con mejor manejo
         $(document).on('click', '.delete-btn', function(e) {
             e.preventDefault();
             var countryId = $(this).data('id');
-            var url = "{{ route('departments.destroy', ':id') }}";
+            var url = "{{ route('clients.destroy', ':id') }}";
             url = url.replace(':id', countryId);
             
-            if (confirm('¿Estás seguro de eliminar este departamento?')) {
+            if (confirm('¿Estás seguro de eliminar este cliente?')) {
                 $.ajax({
                     url: url,
                     type: 'POST', // Usamos POST para compatibilidad
@@ -102,7 +105,7 @@
                         toastr.success(response.success);
                     },
                     error: function(xhr) {
-                        var errorMessage = xhr.responseJSON?.error || 'Error al eliminar el país';
+                        var errorMessage = xhr.responseJSON?.error || 'Error al eliminar el cliente';
                         toastr.error(errorMessage);
                     }
                 });

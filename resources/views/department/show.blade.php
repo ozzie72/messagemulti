@@ -11,7 +11,7 @@
                 <div class="card">
                     <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
                         <div class="float-left">
-                            <span class="card-title">{{ __('Show') }} Department</span>
+                            <span class="card-title">{{ __('Show') }} {{ __('Department')}}</span>
                         </div>
                         <div class="float-right">
                             <a class="btn btn-primary btn-sm" href="{{ route('departments.index') }}"> {{ __('Back') }}</a>
@@ -20,6 +20,10 @@
 
                     <div class="card-body bg-white">
                         
+                                <div class="form-group mb-2 mb20">
+                                    <strong>Divition Id:</strong>
+                                    {{ $department->divition_id }}
+                                </div>
                                 <div class="form-group mb-2 mb20">
                                     <strong>Name:</strong>
                                     {{ $department->name }}

@@ -296,5 +296,11 @@
     "City": "Ciudad",
     "Cities": "Ciudades",
     "Select a state": "Seleccione estado",
-    "Enter city name": "Nombre de la ciudad"
+    "Enter city name": "Nombre de la ciudad",
+    "Enter country name": "Nombre del País",
+    "Department": "Departamento",
+    "Description": "Descripción",
+    "Divition": "Sucursal",
+    "Select a division": "Seleccione sucursal",
+    "Departments": "Departamentos"
 }

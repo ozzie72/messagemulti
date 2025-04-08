@@ -31,41 +31,81 @@
 
                     <div class="card-body bg-white">
                         <div class="table-responsive">
-                            <table class="table table-striped table-hover">
+                            <table class="table table-striped table-hover" id="countries-table">
                                 <thead class="thead">
                                     <tr>
-                                        <th>No</th>
+                                        <th>Id</th>
                                         <th >{{ __('Name') }}</th>
                                         <th >Code ISO 3166-1</th>
                                         <th></th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($countries as $country)
-                                        <tr>
-                                            <td>{{ ++$i }}</td>
-                                            
-										<td >{{ $country->name }}</td>
-										<td >{{ $country->code }}</td>
-
-                                            <td>
-                                                <form action="{{ route('countries.destroy', $country->id) }}" method="POST">
-                                                    <a class="btn btn-sm btn-primary " href="{{ route('countries.show', $country->id) }}"><i class="fa fa-fw fa-eye"></i> {{ __('Show') }}</a>
-                                                    <a class="btn btn-sm btn-success" href="{{ route('countries.edit', $country->id) }}"><i class="fa fa-fw fa-edit"></i> {{ __('Edit') }}</a>
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="btn btn-danger btn-sm" onclick="event.preventDefault(); confirm('Are you sure to delete?') ? this.closest('form').submit() : false;"><i class="fa fa-fw fa-trash"></i> {{ __('Delete') }}</button>
-                                                </form>
-                                            </td>
-                                        </tr>
-                                    @endforeach
                                 </tbody>
                             </table>
                         </div>
                     </div>
                 </div>
-                {!! $countries->withQueryString()->links() !!}
             </div>
         </div>
     </div>
+
+
+    <script>
+    $(document).ready(function() {
+        // Inicializar DataTable
+        var table = $('#countries-table').DataTable({
+            language: {url: "https://cdn.datatables.net/plug-ins/1.13.7/i18n/es-ES.json"},
+            processing: true,
+            serverSide: true,
+            ajax: {
+                url: "{{ route('countries.index') }}",
+                type: 'GET'
+            },
+            columns: [
+                { data: 'id', name: 'id' },
+                { data: 'name', name: 'name' },
+                { data: 'code', name: 'code' },
+                { 
+                    data: 'action', 
+                    name: 'action', 
+                    orderable: false, 
+                    searchable: false,
+                    className: 'text-center' 
+                }
+            ]
+        });
+
+        // Eliminar país con mejor manejo
+        $(document).on('click', '.delete-btn', function(e) {
+            e.preventDefault();
+            var countryId = $(this).data('id');
+            var url = "{{ route('countries.destroy', ':id') }}";
+            url = url.replace(':id', countryId);
+            
+            if (confirm('¿Estás seguro de eliminar este país?')) {
+                $.ajax({
+                    url: url,
+                    type: 'POST', // Usamos POST para compatibilidad
+                    data: {
+                        _token: "{{ csrf_token() }}",
+                        _method: 'DELETE' // Esto simula un DELETE
+                    },
+                    success: function(response) {
+                        // Recargar la tabla manteniendo la paginación
+                        table.ajax.reload(null, false);
+                        
+                        // Mostrar notificación
+                        toastr.success(response.success);
+                    },
+                    error: function(xhr) {
+                        var errorMessage = xhr.responseJSON?.error || 'Error al eliminar el país';
+                        toastr.error(errorMessage);
+                    }
+                });
+            }
+        });
+    });
+</script>
+
 @endsection

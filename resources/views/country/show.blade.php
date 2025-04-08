@@ -19,16 +19,14 @@
                     </div>
 
                     <div class="card-body bg-white">
-                        
-                                <div class="form-group mb-2 mb20">
-                                    <strong>{{ __('Name') }}:</strong>
-                                    {{ $country->name }}
-                                </div>
-                                <div class="form-group mb-2 mb20">
-                                    <strong>Code ISO 3166-1:</strong>
-                                    {{ $country->code }}
-                                </div>
-
+                        <div class="form-group mb-2 mb20">
+                            <strong>{{ __('Name') }}:</strong>
+                            {{ $country->name }}
+                        </div>
+                        <div class="form-group mb-2 mb20">
+                            <strong>Code ISO 3166-1:</strong>
+                            {{ $country->code }}
+                        </div>
                     </div>
                 </div>
             </div>

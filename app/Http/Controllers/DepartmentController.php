@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Department;
+use App\Models\Divition;
+use Yajra\DataTables\Facades\DataTables;
+
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use App\Http\Requests\DepartmentRequest;
@@ -14,12 +17,22 @@ class DepartmentController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request): View
+    public function index(Request $request)
     {
-        $departments = Department::paginate();
-
-        return view('department.index', compact('departments'))
-            ->with('i', ($request->input('page', 1) - 1) * $departments->perPage());
+        if ($request->ajax()) {
+            $data = Department::with('divition')->select('*');
+            
+            return DataTables::of($data)
+                ->addIndexColumn()
+                ->addColumn('action', function($row){
+                    $btn = '<a href="'.route('departments.edit', $row->id).'" class="btn btn-primary btn-sm">Editar</a>';
+                    $btn .= ' <button class="btn btn-danger btn-sm delete-btn" data-id="'.$row->id.'">Eliminar</button>';
+                    return $btn;
+                })
+                ->rawColumns(['action'])
+                ->make(true);
+        }
+        return view('department.index');
     }
 
     /**
@@ -28,8 +41,9 @@ class DepartmentController extends Controller
     public function create(): View
     {
         $department = new Department();
+        $divitions = Divition::all(); 
 
-        return view('department.create', compact('department'));
+        return view('department.create', compact('department','divitions'));
     }
 
     /**
@@ -59,8 +73,9 @@ class DepartmentController extends Controller
     public function edit($id): View
     {
         $department = Department::find($id);
+        $divitions = Divition::all(); 
 
-        return view('department.edit', compact('department'));
+        return view('department.edit', compact('department','divitions'));
     }
 
     /**

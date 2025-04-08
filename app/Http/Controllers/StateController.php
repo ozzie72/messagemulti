@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\State;
 use App\Models\Country;
+use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use App\Http\Requests\StateRequest;

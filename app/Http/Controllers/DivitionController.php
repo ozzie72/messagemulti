@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Divition;
+use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use App\Http\Requests\DivitionRequest;
