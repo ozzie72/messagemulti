@@ -12,6 +12,8 @@ use App\Http\Requests\DepartmentRequest;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
 
+use App\Helpers\AuditHelper;
+
 class DepartmentController extends Controller
 {
     /**

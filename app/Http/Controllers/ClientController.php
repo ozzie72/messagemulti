@@ -4,13 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Models\Client;
 use App\Models\Divition;
-
 use Yajra\DataTables\Facades\DataTables;
+
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use App\Http\Requests\ClientRequest;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
+
+use App\Helpers\AuditHelper;
 
 class ClientController extends Controller
 {
