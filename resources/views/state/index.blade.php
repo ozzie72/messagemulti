@@ -1,7 +1,7 @@
 @extends('components.layouts.main')
 
 @section('title')
-    Divitions
+    {{ __('States') }}
 @endsection
 
 @section('content')
@@ -13,11 +13,11 @@
                         <div style="display: flex; justify-content: space-between; align-items: center;">
 
                             <span id="card_title">
-                                {{ __('Divitions') }}
+                                {{ __('States') }}
                             </span>
 
                              <div class="float-right">
-                                <a href="{{ route('divitions.create') }}" class="btn btn-primary btn-sm float-right"  data-placement="left">
+                                <a href="{{ route('states.create') }}" class="btn btn-primary btn-sm float-right"  data-placement="left">
                                   {{ __('Create New') }}
                                 </a>
                               </div>
@@ -35,25 +35,24 @@
                                 <thead class="thead">
                                     <tr>
                                         <th>No</th>
-                                        
-									<th >Name</th>
-									<th >Description</th>
+                                        <th>{{ __('Name')}}</th>
+                                        <th>{{ __('Country')}}</th>
 
                                         <th></th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($divitions as $divition)
+                                    @foreach ($states as $state)
                                         <tr>
                                             <td>{{ ++$i }}</td>
                                             
-										<td >{{ $divition->name }}</td>
-										<td >{{ $divition->description }}</td>
+										<td >{{ $state->name }}</td>
+										<td >{{ $state->country->name }}</td>
 
                                             <td>
-                                                <form action="{{ route('divitions.destroy', $divition->id) }}" method="POST">
-                                                    <a class="btn btn-sm btn-primary " href="{{ route('divitions.show', $divition->id) }}"><i class="fa fa-fw fa-eye"></i> {{ __('Show') }}</a>
-                                                    <a class="btn btn-sm btn-success" href="{{ route('divitions.edit', $divition->id) }}"><i class="fa fa-fw fa-edit"></i> {{ __('Edit') }}</a>
+                                                <form action="{{ route('states.destroy', $state->id) }}" method="POST">
+                                                    <a class="btn btn-sm btn-primary " href="{{ route('states.show', $state->id) }}"><i class="fa fa-fw fa-eye"></i> {{ __('Show') }}</a>
+                                                    <a class="btn btn-sm btn-success" href="{{ route('states.edit', $state->id) }}"><i class="fa fa-fw fa-edit"></i> {{ __('Edit') }}</a>
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit" class="btn btn-danger btn-sm" onclick="event.preventDefault(); confirm('Are you sure to delete?') ? this.closest('form').submit() : false;"><i class="fa fa-fw fa-trash"></i> {{ __('Delete') }}</button>
@@ -66,7 +65,7 @@
                         </div>
                     </div>
                 </div>
-                {!! $divitions->withQueryString()->links() !!}
+                {!! $states->withQueryString()->links() !!}
             </div>
         </div>
     </div>

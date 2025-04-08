@@ -1,7 +1,7 @@
 @extends('components.layouts.main')
 
 @section('title')
-    {{ __('Create') }} {{ __('Department') }}
+    {{ __('Create') }} {{ __('City') }}
 @endsection
 
 @section('content')
@@ -11,20 +11,17 @@
 
                 <div class="card card-default">
                     <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
-                        
-                        <div class="float-left">
-                            <span class="card-title">{{ __('Create') }} {{ __('Department') }}</span>
-                        </div>
+                        <span class="card-title">{{ __('Create') }} {{ __('City') }}</span>
                         <div class="float-right">
-                            <a class="btn btn-primary btn-sm" href="{{ route('departments.index') }}"> {{ __('Back') }}</a>
-                        </div>                        
-                        
+                            <a class="btn btn-primary btn-sm" href="{{ route('cities.index') }}"> {{ __('Back') }}</a>
+                        </div>
+
                     </div>
                     <div class="card-body bg-white">
-                        <form method="POST" action="{{ route('departments.store') }}"  role="form" enctype="multipart/form-data">
+                        <form method="POST" action="{{ route('cities.store') }}"  role="form" enctype="multipart/form-data">
                             @csrf
 
-                            @include('department.form')
+                            @include('city.form')
 
                         </form>
                     </div>

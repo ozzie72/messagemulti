@@ -1,7 +1,7 @@
 @extends('components.layouts.main')
 
 @section('title')
-    {{ $divition->name ?? __('Show') . " " . __('Divition') }}
+    {{ $state->name ?? __('Show') . " " . __('State') }}
 @endsection
 
 @section('content')
@@ -11,10 +11,10 @@
                 <div class="card">
                     <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
                         <div class="float-left">
-                            <span class="card-title">{{ __('Show') }} Divition</span>
+                            <span class="card-title">{{ __('Show') }} {{ __('State') }}</span>
                         </div>
                         <div class="float-right">
-                            <a class="btn btn-primary btn-sm" href="{{ route('divitions.index') }}"> {{ __('Back') }}</a>
+                            <a class="btn btn-primary btn-sm" href="{{ route('states.index') }}"> {{ __('Back') }}</a>
                         </div>
                     </div>
 
@@ -22,11 +22,11 @@
                         
                                 <div class="form-group mb-2 mb20">
                                     <strong>Name:</strong>
-                                    {{ $divition->name }}
+                                    {{ $state->name }}
                                 </div>
                                 <div class="form-group mb-2 mb20">
-                                    <strong>Description:</strong>
-                                    {{ $divition->description }}
+                                    <strong>{{ __('Country') }}</strong>
+                                    {{ $state->country->name }}
                                 </div>
 
                     </div>

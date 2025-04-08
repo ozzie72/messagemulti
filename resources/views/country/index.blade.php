@@ -1,7 +1,7 @@
 @extends('components.layouts.main')
 
 @section('title')
-    {{ __('Departments') }}
+    {{ __('Country') }}
 @endsection
 
 @section('content')
@@ -13,11 +13,11 @@
                         <div style="display: flex; justify-content: space-between; align-items: center;">
 
                             <span id="card_title">
-                                {{ __('Departments') }}
+                                {{ __('Countries') }}
                             </span>
 
                              <div class="float-right">
-                                <a href="{{ route('departments.create') }}" class="btn btn-primary btn-sm float-right"  data-placement="left">
+                                <a href="{{ route('countries.create') }}" class="btn btn-primary btn-sm float-right"  data-placement="left">
                                   {{ __('Create New') }}
                                 </a>
                               </div>
@@ -31,13 +31,12 @@
 
                     <div class="card-body bg-white">
                         <div class="table-responsive">
-                            <table class="table table-striped table-hover" id="departments-table">
+                            <table class="table table-striped table-hover" id="countries-table">
                                 <thead class="thead">
                                     <tr>
-                                        <th>No</th>
-                                        <th >{{ __('Divition') }}</th>
+                                        <th>Id</th>
                                         <th >{{ __('Name') }}</th>
-                                        <th >{{ __('Description') }}</th>
+                                        <th >Code ISO 3166-1</th>
                                         <th></th>
                                     </tr>
                                 </thead>
@@ -52,23 +51,21 @@
     </div>
 
 
-
-
     <script>
     $(document).ready(function() {
         // Inicializar DataTable
-        var table = $('#departments-table').DataTable({
+        var table = $('#countries-table').DataTable({
             language: {url: "https://cdn.datatables.net/plug-ins/1.13.7/i18n/es-ES.json"},
             processing: true,
             serverSide: true,
             ajax: {
-                url: "{{ route('departments.index') }}",
+                url: "{{ route('countries.index') }}",
                 type: 'GET'
             },
             columns: [
                 { data: 'id', name: 'id' },
-                { data: 'divition.name', name: 'divition.name' },
                 { data: 'name', name: 'name' },
+                { data: 'code', name: 'code' },
                 { 
                     data: 'action', 
                     name: 'action', 
@@ -83,10 +80,10 @@
         $(document).on('click', '.delete-btn', function(e) {
             e.preventDefault();
             var countryId = $(this).data('id');
-            var url = "{{ route('departments.destroy', ':id') }}";
+            var url = "{{ route('countries.destroy', ':id') }}";
             url = url.replace(':id', countryId);
             
-            if (confirm('¿Estás seguro de eliminar este departamento?')) {
+            if (confirm('¿Estás seguro de eliminar este país?')) {
                 $.ajax({
                     url: url,
                     type: 'POST', // Usamos POST para compatibilidad

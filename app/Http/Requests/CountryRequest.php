@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class ClientRequest extends FormRequest
+class CountryRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,12 +23,7 @@ class ClientRequest extends FormRequest
     {
         return [
 			'name' => 'required|string',
-			'ip' => 'required|string',
-			'port' => 'required|string',
-			'server_user' => 'string',
-			'server_pass' => 'string',
-            'divition_id' => 'required|exists:divitions,id',
-            'department_id' => 'required|exists:departments,id',
+			'code' => 'required|string',
         ];
     }
 }

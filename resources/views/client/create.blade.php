@@ -1,7 +1,7 @@
 @extends('components.layouts.main')
 
-@section('template_title')
-    {{ __('Create') }} Cliente
+@section('title')
+    {{ __('Create') }} Client
 @endsection
 
 @section('content')
@@ -11,7 +11,7 @@
 
                 <div class="card card-default">
                     <div class="card-header">
-                        <h5><span class="card-title">{{ __('Create') }} Cliente</span></h5>
+                        <span class="card-title">{{ __('Create') }} Client</span>
                     </div>
                     <div class="card-body bg-white">
                         <form method="POST" action="{{ route('clients.store') }}"  role="form" enctype="multipart/form-data">

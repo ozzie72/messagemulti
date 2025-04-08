@@ -1,6 +1,6 @@
 @extends('components.layouts.main')
 
-@section('template_title')
+@section('title')
     {{ __('Update') }} Client
 @endsection
 
@@ -11,7 +11,7 @@
 
                 <div class="card card-default">
                     <div class="card-header">
-                        <span class="card-title">{{ __('Update') }} Cliente</span>
+                        <span class="card-title">{{ __('Update') }} Client</span>
                     </div>
                     <div class="card-body bg-white">
                         <form method="POST" action="{{ route('clients.update', $client->id) }}"  role="form" enctype="multipart/form-data">

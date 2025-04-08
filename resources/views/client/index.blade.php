@@ -1,6 +1,6 @@
 @extends('components.layouts.main')
 
-@section('template_title')
+@section('title')
     Clients
 @endsection
 
@@ -29,51 +29,89 @@
                         </div>
                     @endif
 
-
                     <div class="card-body bg-white">
                         <div class="table-responsive">
-                            <table class="table table-striped table-hover">
+                            <table class="table table-striped table-hover" id="clients-table">
                                 <thead class="thead">
                                     <tr>
                                         <th>No</th>
-                                        
-                                        <th class="text-center">Cliente</th>
-                                        <th class="text-center">Dirección Servidor</th>
-                                        <th class="text-center">Puerto de Conexión</th>
-                                        <th class="text-center">Estatus</th>
-                                        <th class="text-center">Opciones</th>
-
+                                        <th >Name</th>
+                                        <th >Ip</th>
+                                        <th >Port</th>
+                                        <th >Server User</th>
+                                        <th >Status</th>
                                         <th></th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($clients as $client)
-                                        <tr>
-                                            <td>{{ ++$i }}</td>
-                                            
-										<td >{{ $client->name }}</td>
-										<td >{{ $client->ip }}</td>
-										<td >{{ $client->port }}</td>
-										<td >{{ $client->status }}</td>
-
-                                            <td>
-                                                <form action="{{ route('clients.destroy', $client->id) }}" method="POST">
-                                                    <a class="btn btn-sm btn-primary " href="{{ route('clients.show', $client->id) }}"><i class="fa fa-fw fa-eye"></i> {{ __('Show') }}</a>
-                                                    <a class="btn btn-sm btn-success" href="{{ route('clients.edit', $client->id) }}"><i class="fa fa-fw fa-edit"></i> {{ __('Edit') }}</a>
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="btn btn-danger btn-sm" onclick="event.preventDefault(); confirm('Are you sure to delete?') ? this.closest('form').submit() : false;"><i class="fa fa-fw fa-trash"></i> {{ __('Delete') }}</button>
-                                                </form>
-                                            </td>
-                                        </tr>
-                                    @endforeach
                                 </tbody>
                             </table>
                         </div>
                     </div>
                 </div>
-                {!! $clients->withQueryString()->links() !!}
             </div>
         </div>
     </div>
+
+    <script>
+    $(document).ready(function() {
+        // Inicializar DataTable
+        var table = $('#clients-table').DataTable({
+            language: {url: "https://cdn.datatables.net/plug-ins/1.13.7/i18n/es-ES.json"},
+            processing: true,
+            serverSide: true,
+            ajax: {
+                url: "{{ route('clients.index') }}",
+                type: 'GET'
+            },
+            columns: [
+                { data: 'id', name: 'id' },
+                { data: 'name', name: 'name' },
+                { data: 'ip', name: 'ip' },
+                { data: 'port', name: 'port' },
+
+                { data: 'server_user', name: 'server_user' },
+                { data: 'status', name: 'status' },
+                { 
+                    data: 'action', 
+                    name: 'action', 
+                    orderable: false, 
+                    searchable: false,
+                    className: 'text-center' 
+                }
+            ]
+        });
+
+        // Eliminar cliente con mejor manejo
+        $(document).on('click', '.delete-btn', function(e) {
+            e.preventDefault();
+            var countryId = $(this).data('id');
+            var url = "{{ route('clients.destroy', ':id') }}";
+            url = url.replace(':id', countryId);
+            
+            if (confirm('¿Estás seguro de eliminar este cliente?')) {
+                $.ajax({
+                    url: url,
+                    type: 'POST', // Usamos POST para compatibilidad
+                    data: {
+                        _token: "{{ csrf_token() }}",
+                        _method: 'DELETE' // Esto simula un DELETE
+                    },
+                    success: function(response) {
+                        // Recargar la tabla manteniendo la paginación
+                        table.ajax.reload(null, false);
+                        
+                        // Mostrar notificación
+                        toastr.success(response.success);
+                    },
+                    error: function(xhr) {
+                        var errorMessage = xhr.responseJSON?.error || 'Error al eliminar el cliente';
+                        toastr.error(errorMessage);
+                    }
+                });
+            }
+        });
+    });
+</script>
+
 @endsection

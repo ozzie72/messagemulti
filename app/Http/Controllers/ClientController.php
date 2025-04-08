@@ -3,39 +3,37 @@
 namespace App\Http\Controllers;
 
 use App\Models\Client;
-use App\Models\User;
 use App\Models\Divition;
 
+use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use App\Http\Requests\ClientRequest;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
 
-use Illuminate\Support\Facades\Date;
-use Illuminate\Support\Facades\DB; // Importar la clase DB para transacciones
-use Throwable; // Importar la clase Throwable para capturar excepciones
-
 class ClientController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-
-
-
-
-
-
-
-     
-    public function index(Request $request): View
+    public function index(Request $request)
     {
-        $clients = Client::paginate();
-        return view('client.index', compact('clients'))
-            ->with('i', ($request->input('page', 1) - 1) * $clients->perPage());
+        if ($request->ajax()) {
+            $data = Client::all();
+            
+            return DataTables::of($data)
+                ->addIndexColumn()
+                ->addColumn('action', function($row){
+                    $btn = '<a href="'.route('clients.edit', $row->id).'" class="btn btn-primary btn-sm">Editar</a>';
+                    $btn .= ' <button class="btn btn-danger btn-sm delete-btn" data-id="'.$row->id.'">Eliminar</button>';
+                    return $btn;
+                })
+                ->rawColumns(['action'])
+                ->make(true);
+        }
 
-
+        return view('client.index');
     }
 
     /**
@@ -44,61 +42,21 @@ class ClientController extends Controller
     public function create(): View
     {
         $client = new Client();
-        $divitions = Divition::all(); // Cargar todas las divisiones para el select
+        $divitions = Divition::all();
 
-        return view('client.create', compact('client','divitions'));
+        return view('client.create', compact('client', 'divitions'));
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    
     public function store(ClientRequest $request): RedirectResponse
     {
-        try {
-            // Iniciar una transacción de base de datos para asegurar la atomicidad
-            DB::beginTransaction();
-                
-            $validated['divition_id'] = $request->divition_id;
-            $validated['department_id'] = $request->department_id;
+        Client::create($request->validated());
 
-            // Crear el cliente y capturar el objeto creado
-            $client = Client::create($request->validated());
-    
-            // Utilizar el ID del cliente creado
-            User::create([
-                'name' => $request->input('name'),
-                'username' => $request->input('username'),
-                'email' => $request->input('email'),
-                'phone' => $request->input('phone'),
-                'password' => bcrypt($request->input('password')),
-                'type' => 2,
-                'client_status' => 'A',
-                'user_status' => 'P',
-                'client_id' => $client->id, // Utilizar el ID del cliente
-
-                'password_change' => Date::now()->format('Y-m-d') // Utilizar Date::now() es mas claro
-            ]);
-    
-            // Confirmar la transacción si todo fue exitoso
-            DB::commit();
-    
-            return Redirect::route('clients.index')
-                ->with('success', 'Client created successfully.');
-        } catch (Throwable $e) {
-            // Revertir la transacción en caso de error
-            DB::rollBack();
-    
-            // Registrar el error (puedes utilizar logs para esto)
-            \Log::error('Error creating client or user: ' . $e->getMessage());
-    
-            // Redirigir con un mensaje de error
-            return Redirect::route('clients.index')
-                ->with('error', 'An error occurred while creating the client.');
-        }
+        return Redirect::route('clients.index')
+            ->with('success', 'Client created successfully.');
     }
-
-
 
     /**
      * Display the specified resource.
@@ -116,9 +74,9 @@ class ClientController extends Controller
     public function edit($id): View
     {
         $client = Client::find($id);
-        $divitions = Divition::all(); // Cargar todas las divisiones para el select
+        $divitions = Divition::all();
 
-        return view('client.edit', compact('client', 'divitions'));
+        return view('client.edit', compact('client','divitions'));
     }
 
     /**

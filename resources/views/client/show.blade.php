@@ -1,6 +1,6 @@
 @extends('components.layouts.main')
 
-@section('template_title')
+@section('title')
     {{ $client->name ?? __('Show') . " " . __('Client') }}
 @endsection
 
@@ -47,6 +47,14 @@
                                 <div class="form-group mb-2 mb20">
                                     <strong>Status:</strong>
                                     {{ $client->status }}
+                                </div>
+                                <div class="form-group mb-2 mb20">
+                                    <strong>Divition Id:</strong>
+                                    {{ $client->divition_id }}
+                                </div>
+                                <div class="form-group mb-2 mb20">
+                                    <strong>Department Id:</strong>
+                                    {{ $client->department_id }}
                                 </div>
 
                     </div>
