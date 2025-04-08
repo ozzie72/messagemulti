@@ -5,66 +5,64 @@ namespace App\Http\Middleware;
 use App\Helpers\AuditHelper;
 use Closure;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class AuditRequests
 {
-    public function handle(Request $request, Closure $next)
+    public function handle(Request $request, Closure $next): Response
     {
-        // Excluir rutas específicas (opcional)
-        if ($this->shouldExcludeRoute($request)) {
-            return $next($request);
-        }
-
         $response = $next($request);
-
-        // Registrar después de la respuesta para tener acceso a los datos
-        $this->logRequest($request, $response);
-
+        
+        if ($this->shouldAudit($request)) {
+            $this->logRequest($request, $response);
+        }
+        
         return $response;
     }
 
-    protected function shouldExcludeRoute(Request $request): bool
+    protected function shouldAudit(Request $request): bool
     {
-        $excluded = [
+        return !$request->is([
+            'up',
             'horizon*',
             'telescope*',
             'livewire*',
             '_debugbar*'
-        ];
-        
-        return $request->is($excluded);
+        ]);
     }
 
-    protected function logRequest(Request $request, $response)
+    protected function logRequest(Request $request, Response $response): void
     {
         $method = $request->method();
         $status = $response->getStatusCode();
         
-        // Solo registrar métodos importantes
-        if (!in_array($method, ['GET', 'OPTIONS', 'HEAD'])) {
-            $operation = "{$method} {$request->path()}";
-            $details = [
-                'status' => $status,
-                'input' => $request->except(['password', '_token']),
-                'response' => $status >= 400 ? $this->getResponseData($response) : null
-            ];
-            
-            AuditHelper::log($operation, $details, $this->getLogType($status));
+        if (in_array($method, ['POST', 'PUT', 'PATCH', 'DELETE'])) {
+            AuditHelper::log(
+                operation: "{$method} {$request->path()}",
+                details: [
+                    'status' => $status,
+                    'input' => $request->except(['password', '_token']),
+                    'response' => $status >= 400 ? $this->getResponseData($response) : null
+                ],
+                type: $this->getLogType($status)
+            );
         }
     }
 
     protected function getLogType(int $status): string
     {
-        if ($status >= 500) return 'error';
-        if ($status >= 400) return 'warning';
-        return 'info';
+        return match (true) {
+            $status >= 500 => 'error',
+            $status >= 400 => 'warning',
+            default => 'info'
+        };
     }
 
-    protected function getResponseData($response)
+    protected function getResponseData(Response $response): ?array
     {
         try {
-            return json_decode($response->getContent(), true);
-        } catch (\Exception $e) {
+            return json_decode($response->getContent(), true) ?: null;
+        } catch (\Exception) {
             return null;
         }
     }
