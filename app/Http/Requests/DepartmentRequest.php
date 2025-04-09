@@ -23,8 +23,8 @@ class DepartmentRequest extends FormRequest
     {
         return [
             'divition_id' => 'required|exists:divitions,id',
-			'name' => 'required|string',
-			'description' => 'string',
+			'name' => 'required|string|max:255',
+			'description' => 'string|max:255',
         ];
     }
 }

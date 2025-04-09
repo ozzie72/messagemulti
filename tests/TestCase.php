@@ -6,5 +6,7 @@ use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 
 abstract class TestCase extends BaseTestCase
 {
-    //
+    use CreatesApplication;
+//    use RefreshDatabase; // Opcional, depende de tu estrategia de DB
 }
+

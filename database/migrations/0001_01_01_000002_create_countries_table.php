@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('countries', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('code')->unique(); // Código del país (ej: VE, US)
+            $table->string('code', 2)->unique(); // Código del país (ej: VE, US)
             $table->timestamps();
         });
     }
