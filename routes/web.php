@@ -46,13 +46,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('settings/profile', Profile::class)->name('settings.profile');
     Route::get('settings/password', Password::class)->name('settings.password');
     Route::get('settings/appearance', Appearance::class)->name('settings.appearance');
-   
-    Route::get('divitions/{divition}/departments', function ($divitionId) {
-        return response()->json(
-            Department::where('divition_id', $divitionId)->get()
-        );
-    });
 
+    Route::get('divitions/{divition}/departments', [DepartmentController::class, 'byDivition']);
 
 });
 

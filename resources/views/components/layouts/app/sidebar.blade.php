@@ -17,14 +17,18 @@
                 </flux:navlist.group>
             </flux:navlist>
 
-
             <flux:navlist variant="outline">
                 <flux:navlist.group :heading="__('Users')" class="grid">
-                    <flux:navlist.item icon="home" :href="route('users.index')" :current="request()->routeIs('users.index')" wire:navigate>{{ __('Users') }}</flux:navlist.item>
+                    <flux:navlist.item icon="home" :href="route('users.index')" :current="request()->routeIs('users.index')" wire:navigate>{{ __('Users') }}
+                    </flux:navlist.item>
                 </flux:navlist.group>
             </flux:navlist>
-
             
+            <flux:navlist variant="outline">
+                <flux:navlist.group :heading="__('Clients')" class="grid">
+                    <flux:navlist.item icon="home" :href="route('clients.index')" :current="request()->routeIs('clients.index')" wire:navigate>{{ __('Clients') }}</flux:navlist.item>
+                </flux:navlist.group>
+            </flux:navlist>
 
 
             <flux:spacer />
