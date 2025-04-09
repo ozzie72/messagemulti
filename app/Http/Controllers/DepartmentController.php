@@ -34,7 +34,7 @@ class DepartmentController extends Controller
                 ->rawColumns(['action'])
                 ->make(true);
         }
-        return view('department.index');
+        return view('modules.department.index');
     }
 
     /**
@@ -45,7 +45,7 @@ class DepartmentController extends Controller
         $department = new Department();
         $divitions = Divition::all(); 
 
-        return view('department.create', compact('department','divitions'));
+        return view('modules.department.create', compact('department','divitions'));
     }
 
     /**
@@ -66,7 +66,7 @@ class DepartmentController extends Controller
     {
         $department = Department::find($id);
 
-        return view('department.show', compact('department'));
+        return view('modules.department.show', compact('department'));
     }
 
     /**
@@ -77,7 +77,7 @@ class DepartmentController extends Controller
         $department = Department::find($id);
         $divitions = Divition::all(); 
 
-        return view('department.edit', compact('department','divitions'));
+        return view('modules.department.edit', compact('department','divitions'));
     }
 
     /**

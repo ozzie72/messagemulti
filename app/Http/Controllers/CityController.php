@@ -23,7 +23,7 @@ class CityController extends Controller
     {
         $cities = City::paginate();
 
-        return view('city.index', compact('cities'))
+        return view('modules.city.index', compact('cities'))
             ->with('i', ($request->input('page', 1) - 1) * $cities->perPage());
     }
 
@@ -35,7 +35,7 @@ class CityController extends Controller
         $city = new City();
         $states = State::all(); 
 
-        return view('city.create', compact('city', 'states'));
+        return view('modules.city.create', compact('city', 'states'));
     }
 
     /**
@@ -56,7 +56,7 @@ class CityController extends Controller
     {
         $city = City::find($id);
 
-        return view('city.show', compact('city'));
+        return view('modules.city.show', compact('city'));
     }
 
     /**
@@ -67,7 +67,7 @@ class CityController extends Controller
         $city = City::find($id);
         $states = State::all(); 
 
-        return view('city.edit', compact('city', 'states'));
+        return view('modules.city.edit', compact('city', 'states'));
     }
 
     /**

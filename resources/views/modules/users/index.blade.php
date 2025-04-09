@@ -1,4 +1,10 @@
-<x-layouts.app :title="__('Users')">
+@extends('components.layouts.main')
+
+@section('title')
+    {{ __('Users') }}
+@endsection
+
+@section('content')
 
     <div class="card">
         <div class="card-header">
@@ -60,4 +66,4 @@
         });
     </script>
     
-</x-layouts.app>
+@endsection

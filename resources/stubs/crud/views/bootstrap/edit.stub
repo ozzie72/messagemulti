@@ -1,6 +1,6 @@
 @extends('{{layout}}')
 
-@section('template_title')
+@section('title')
     {{ __('Update') }} {{modelTitle}}
 @endsection
 
@@ -10,7 +10,7 @@
             <div class="col-md-12">
 
                 <div class="card card-default">
-                    <div class="card-header">
+                    <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
                         <span class="card-title">{{ __('Update') }} {{modelTitle}}</span>
                     </div>
                     <div class="card-body bg-white">

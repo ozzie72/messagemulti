@@ -29,6 +29,7 @@ class ClientRequest extends FormRequest
 			'port' => 'required|string|max:6',
 			'server_user' => 'string|max:50',
 			'server_pass' => 'string|max:100',
+            'image'  => 'required|image|mimes:jpeg,jpg',
             'divition_id' => 'required|exists:divitions,id',
             'department_id' => 'required|exists:departments,id',
         ];

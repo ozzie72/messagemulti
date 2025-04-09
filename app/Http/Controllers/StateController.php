@@ -22,7 +22,7 @@ class StateController extends Controller
     {
         $states = State::paginate();
 
-        return view('state.index', compact('states'))
+        return view('modules.state.index', compact('states'))
             ->with('i', ($request->input('page', 1) - 1) * $states->perPage());
     }
 
@@ -33,7 +33,7 @@ class StateController extends Controller
     {
         $state = new State();
         $countries = Country::all(); 
-        return view('state.create', compact('state','countries'));
+        return view('modules.state.create', compact('state','countries'));
     }
 
     /**
@@ -55,7 +55,7 @@ class StateController extends Controller
     {
         $state = State::find($id);
 
-        return view('state.show', compact('state'));
+        return view('modules.state.show', compact('state'));
     }
 
     /**
@@ -66,7 +66,7 @@ class StateController extends Controller
         $state = State::find($id);
         $countries = Country::all(); 
 
-        return view('state.edit', compact('state','countries'));
+        return view('modules.state.edit', compact('state','countries'));
     }
 
     /**

@@ -41,8 +41,7 @@ class Client extends Model
      *
      * @var array<int, string>
      */
-    protected $fillable = ['name', 'ip', 'port', 'server_user', 'server_pass', 'image', 'status', 'divition_id', 'department_id'];
-
+    protected $fillable = ['company', 'name', 'last_name', 'ip', 'port', 'server_user', 'server_pass', 'image', 'status', 'divition_id', 'department_id'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

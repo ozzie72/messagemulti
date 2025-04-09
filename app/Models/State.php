@@ -9,8 +9,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class State extends Model
 {
+    
     use HasFactory;
-
+    
+    protected $table = 'states'; // Nombre correcto de la tabla
+    
     protected $fillable = ['name', 'country_id'];
 
     public function country(): BelongsTo

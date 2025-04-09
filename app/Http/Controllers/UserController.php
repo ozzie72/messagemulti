@@ -7,6 +7,7 @@ use Spatie\Permission\Models\Role;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\View\View;
 
 use App\Helpers\AuditHelper;
 
@@ -31,13 +32,13 @@ class UserController extends Controller
                 ->make(true);
         }
         
-        return view('users.index');
+        return view('modules.users.index');
     }
 
     public function create(): View
     {
         $roles = Role::all();
-        return view('users.create', compact('roles'));
+        return view('modules.users.create', compact('roles'));
     }
 
     public function store(Request $request): RedirectResponse
@@ -57,14 +58,14 @@ class UserController extends Controller
 
         $user->syncRoles($request->roles);
 
-        return redirect()->route('users.index')->with('success', 'Usuario creado exitosamente.');
+        return redirect()->route('modules.users.index')->with('success', 'Usuario creado exitosamente.');
     }
 
     public function edit($id): View
     {
         $user = User::with('roles')->findOrFail($id);
         $roles = Role::all();
-        return view('users.edit', compact('user', 'roles'));
+        return view('modules.users.edit', compact('user', 'roles'));
     }
 
     public function update(Request $request, $id): RedirectResponse
@@ -89,7 +90,7 @@ class UserController extends Controller
         $user->update($data);
         $user->syncRoles($request->roles);
 
-        return redirect()->route('users.index')->with('success', 'Usuario actualizado exitosamente.');
+        return redirect()->route('modules.users.index')->with('success', 'Usuario actualizado exitosamente.');
     }
 
     public function destroy($id): RedirectResponse
