@@ -14,9 +14,11 @@ class ClientSeeder extends Seeder
     public function run(): void
     {
         DB::table('clients')->insert([
-            'name' => 'Cliente Predeterminado',
+            'company' => 'Predeterminado',
+            'name' => 'Predeterminado',
+            'last_name' => 'Predeterminado',
             'ip' => '127.0.0.1',
-            'port' => '8080',
+            'port' => '80',
             'image' => 'default.jpg',
             'divition_id' => 1,
             'department_id' => 1,

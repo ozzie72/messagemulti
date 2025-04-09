@@ -8,7 +8,9 @@ use Illuminate\Database\Eloquent\Model;
  * Class Client
  *
  * @property $id
+ * @property $company
  * @property $name
+ * @property $last_name
  * @property $ip
  * @property $port
  * @property $server_user
