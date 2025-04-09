@@ -21,7 +21,7 @@ class DivitionController extends Controller
     {
         $divitions = Divition::paginate();
 
-        return view('divition.index', compact('divitions'))
+        return view('modules.divition.index', compact('divitions'))
             ->with('i', ($request->input('page', 1) - 1) * $divitions->perPage());
     }
 
@@ -32,7 +32,7 @@ class DivitionController extends Controller
     {
         $divition = new Divition();
 
-        return view('divition.create', compact('divition'));
+        return view('modules.divition.create', compact('divition'));
     }
 
     /**
@@ -53,7 +53,7 @@ class DivitionController extends Controller
     {
         $divition = Divition::find($id);
 
-        return view('divition.show', compact('divition'));
+        return view('modules.divition.show', compact('divition'));
     }
 
     /**

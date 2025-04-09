@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests\ClientRequest;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
+use Intervention\Image\Facades\Image; 
 
 use App\Helpers\AuditHelper;
 
@@ -35,7 +36,7 @@ class ClientController extends Controller
                 ->make(true);
         }
 
-        return view('client.index');
+        return view('modules.client.index');
     }
 
     /**
@@ -46,13 +47,80 @@ class ClientController extends Controller
         $client = new Client();
         $divitions = Divition::all();
 
-        return view('client.create', compact('client', 'divitions'));
+        return view('modules.client.create', compact('client', 'divitions'));
     }
 
     /**
      * Store a newly created resource in storage.
      */
     public function store(ClientRequest $request): RedirectResponse
+    {
+        try {
+            // Iniciar una transacción de base de datos para asegurar la atomicidad
+            DB::beginTransaction();
+                
+            $validated['divition_id'] = $request->divition_id;
+            $validated['department_id'] = $request->department_id;
+
+            // Crear el cliente y capturar el objeto creado
+            $client = Client::create($request->validated());
+    
+            // Utilizar el ID del cliente creado
+            User::create([
+                'name' => $request->input('name'),
+                'username' => $request->input('username'),
+                'email' => $request->input('email'),
+                'phone' => $request->input('phone'),
+                'password' => bcrypt($request->input('password')),
+                'type' => 2,
+                'client_status' => 'A',
+                'user_status' => 'P',
+                'client_id' => $client->id, // Utilizar el ID del cliente
+
+                'password_change' => Date::now()->format('Y-m-d') // Utilizar Date::now() es mas claro
+            ]);
+    
+            // Confirmar la transacción si todo fue exitoso
+            DB::commit();
+
+            
+
+            $imgName = $request->file('image');
+
+            $image = Image::make($imgName)->resize(240, 80, function ($constraint) {
+                $constraint->aspectRatio();
+                $constraint->upsize();
+            });
+            $image->save('assets/img/client-'.$client->id.'.jpg');
+    
+            $client->image = 'assets/img/client-'.$client->id.'.jpg';
+            $client->save();
+
+
+
+
+            return Redirect::route('clients.index')
+                ->with('success', 'Client created successfully.');
+        } catch (Throwable $e) {
+            // Revertir la transacción en caso de error
+            DB::rollBack();
+    
+            // Registrar el error (puedes utilizar logs para esto)
+            \Log::error('Error creating client or user: ' . $e->getMessage());
+    
+            // Redirigir con un mensaje de error
+            return Redirect::route('clients.index')
+                ->with('error', 'An error occurred while creating the client.');
+        }
+    }
+
+
+     
+
+
+
+
+    public function storeOLD(ClientRequest $request): RedirectResponse
     {
         Client::create($request->validated());
 
@@ -67,7 +135,7 @@ class ClientController extends Controller
     {
         $client = Client::find($id);
 
-        return view('client.show', compact('client'));
+        return view('modules.client.show', compact('client'));
     }
 
     /**
@@ -78,7 +146,7 @@ class ClientController extends Controller
         $client = Client::find($id);
         $divitions = Divition::all();
 
-        return view('client.edit', compact('client','divitions'));
+        return view('modules.client.edit', compact('client','divitions'));
     }
 
     /**

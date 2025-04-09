@@ -21,9 +21,9 @@
                     <div class="col-md-12">
 
                         <div class="form-group mb-3">
-                            <label for="name" class="form-label">{{ __('Nombre Empresa') }}</label>
-                            <input type="text" name="name" id="name" class="form-control @error('name') is-invalid @enderror" value="{{ old('name', $client?->name) }}" placeholder="Nombre de Empresa" maxlength="50">
-                            @error('name')<div class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></div>@enderror
+                            <label for="company" class="form-label">{{ __('Nombre Empresa') }}</label>
+                            <input type="text" name="company" id="company" class="form-control @error('company') is-invalid @enderror" value="{{ old('company', $client?->company) }}" placeholder="Nombre de Empresa" maxlength="50">
+                            @error('company')<div class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></div>@enderror
                         </div>
                         
                         <div class="form-group mb-3">

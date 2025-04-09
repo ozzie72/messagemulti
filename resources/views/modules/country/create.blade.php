@@ -1,7 +1,7 @@
 @extends('components.layouts.main')
 
 @section('title')
-    {{ __('Create') }} Estado
+    {{ __('Create') }} {{ __('Country') }}
 @endsection
 
 @section('content')
@@ -11,21 +11,23 @@
 
                 <div class="card card-default">
                     <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
-                        <span class="card-title">{{ __('Create') }} Estado</span>
-
+                        <div class="float-left">
+                            <span class="card-title">{{ __('Create') }} {{ __('Country') }}</span>
+                        </div>
                         <div class="float-right">
-                            <a class="btn btn-primary btn-sm" href="{{ route('states.index') }}"> {{ __('Back') }}</a>
-                        </div>                        
-
+                            <a class="btn btn-primary btn-sm" href="{{ route('countries.index') }}"> {{ __('Back') }}</a>
+                        </div>
                     </div>
+
                     <div class="card-body bg-white">
-                        <form method="POST" action="{{ route('states.store') }}"  role="form" enctype="multipart/form-data">
+                        <form method="POST" action="{{ route('countries.store') }}"  role="form" enctype="multipart/form-data">
                             @csrf
 
-                            @include('state.form')
+                            @include('modules.country.form')
 
                         </form>
                     </div>
+
                 </div>
             </div>
         </div>

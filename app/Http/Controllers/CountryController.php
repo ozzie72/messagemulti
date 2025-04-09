@@ -31,13 +31,13 @@ class CountryController extends Controller
                 ->make(true);
         }
 
-        return view('country.index');
+        return view('modules.country.index');
     }
 
     public function create(): View
     {
         $country = new Country();
-        return view('country.create', compact('country'));
+        return view('modules.country.create', compact('country'));
     }
 
     public function store(CountryRequest $request): RedirectResponse
@@ -58,13 +58,13 @@ class CountryController extends Controller
     public function show($id): View
     {
         $country = Country::findOrFail($id);
-        return view('country.show', compact('country'));
+        return view('modules.country.show', compact('country'));
     }
 
     public function edit($id): View
     {
         $country = Country::findOrFail($id);
-        return view('country.edit', compact('country'));
+        return view('modules.country.edit', compact('country'));
     }
 
     public function update(CountryRequest $request, Country $country): RedirectResponse
