@@ -21,9 +21,17 @@ class CountryRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
-			'name' => 'required|string',
-			'code' => 'required|string',
+        $rules = [
+            'name' => 'required|string|max:255',
+            'code' => 'required|string|size:2|unique:countries,code',
         ];
+
+        // Para el caso de actualización, ignorar el código del país actual
+        if ($this->isMethod('patch') || $this->isMethod('put')) {
+            $country = $this->route('country');
+            $rules['code'] .= ',' . $country->id;
+        }
+
+        return $rules;
     }
 }

@@ -22,11 +22,13 @@ class ClientRequest extends FormRequest
     public function rules(): array
     {
         return [
-			'name' => 'required|string',
-			'ip' => 'required|string',
-			'port' => 'required|string',
-			'server_user' => 'string',
-			'server_pass' => 'string',
+			'company' => 'required|string|max:100',
+			'name' => 'required|string|max:50',
+			'last_name' => 'required|string|max:50',
+			'ip' => 'required|string|max:15',
+			'port' => 'required|string|max:6',
+			'server_user' => 'string|max:50',
+			'server_pass' => 'string|max:100',
             'divition_id' => 'required|exists:divitions,id',
             'department_id' => 'required|exists:departments,id',
         ];

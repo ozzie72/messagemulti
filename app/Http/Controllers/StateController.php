@@ -11,6 +11,8 @@ use App\Http\Requests\StateRequest;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
 
+use App\Helpers\AuditHelper;
+
 class StateController extends Controller
 {
     /**

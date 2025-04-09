@@ -10,6 +10,8 @@ use App\Http\Requests\DivitionRequest;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
 
+use App\Helpers\AuditHelper;
+
 class DivitionController extends Controller
 {
     /**
