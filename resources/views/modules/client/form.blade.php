@@ -188,6 +188,97 @@ $(document).ready(function() {
     const imageInput = document.getElementById('uploadBtn');
     const imagePreview = document.getElementById('imagePreview');
 
+
+    // Funcion para cargar estados
+    function loadStates(countryId) {
+        const stateSelect = document.getElementById('state_id');
+        const citySelect = document.getElementById('city_id');
+
+        if (countryId) {
+            fetch(`/countries/${countryId}/states`)
+                .then(response => {
+                    if (!response.ok) throw new Error('Error en la respuesta del servidor');
+                    return response.json();
+                })
+                .then(data => {
+                    // Limpiar y preparar el select
+                    stateSelect.innerHTML = '<option value="">Seleccione un estado</option>';
+                    stateSelect.disabled = false;
+                    
+                    // Iterar con forEach
+                    data.forEach(state => {
+                        const option = document.createElement('option');
+                        option.value = state.id;       // Asumiendo que cada estado tiene 'id'
+                        option.textContent = state.name; // Asumiendo que cada estado tiene 'name'
+                        stateSelect.appendChild(option);
+                    });
+
+                    // Resetear el select de ciudades
+                    citySelect.innerHTML = '<option value="">Seleccione una ciudad</option>';
+                    citySelect.disabled = true;
+                })
+                .catch(error => {
+                    console.error('Error al cargar estados:', error);
+                    stateSelect.innerHTML = '<option value="">Error cargando estados</option>';
+                });
+
+                const preselectedStateId = "{{ old('state_id', $client?->state_id) }}";
+                if (preselectedStateId) {
+                    loadCities(preselectedStateId);
+                }
+
+        } else {
+            // Resetear ambos selects si no hay countryId
+            stateSelect.innerHTML = '<option value="">Seleccione un estado</option>';
+            stateSelect.disabled = true;
+            
+            citySelect.innerHTML = '<option value="">Seleccione una ciudad</option>';
+            citySelect.disabled = true;
+        }
+    }
+
+    // Función para cargar ciudades
+    function loadCities(stateId) {
+        const citySelect = document.getElementById('city_id');
+        const stateSelect = document.getElementById('state_id');
+
+        if (stateId) {
+            fetch(`/states/${stateId}/cities`)
+                .then(response => {
+                    if (!response.ok) throw new Error('Error en la respuesta del servidor');
+                    return response.json();
+                })
+                .then(data => {
+                    // Limpiar y preparar el select
+                    citySelect.innerHTML = '<option value="">Seleccione una ciudad</option>';
+                    citySelect.disabled = false;
+                    
+                    // Iterar con forEach
+                    data.forEach(city => {
+                        const option = document.createElement('option');
+                        option.value = city.id;
+                        option.textContent = city.name;
+                        
+                        // Opcional: Marcar como seleccionado si coincide con un valor previo
+                        if (city.id == "{{ old('city_id', $client?->city_id) }}") {
+                            option.selected = true;
+                        }
+                        
+                        citySelect.appendChild(option);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error al cargar ciudades:', error);
+                    citySelect.innerHTML = '<option value="">Error cargando ciudades</option>';
+                });
+        } else {
+            // Resetear el select de ciudades si no hay stateId
+            citySelect.innerHTML = '<option value="">Seleccione una ciudad</option>';
+            citySelect.disabled = true;
+        }
+    }
+
+
     // Función para cargar departamentos
     function loadDepartments(divitionId) {
         if (divitionId) {
@@ -248,21 +339,8 @@ $(document).ready(function() {
             
             var countryId = $(this).val();
             if (countryId) {
-                $.get('/api/states/' + countryId)
-                    .done(function(data) {
-                        $('#state_id').empty().append('<option value="">Seleccione un estado</option>');
-                        $.each(data, function(key, value) {
-                            $('#state_id').append($('<option>', {
-                                value: key,
-                                text: value
-                            }));
-                        });
-                        $('#state_id').prop('disabled', false);
-                        $('#city_id').empty().append('<option value="">Seleccione una ciudad</option>').prop('disabled', true);
-                    })
-                    .fail(function(jqXHR, textStatus, errorThrown) {
-                        console.error('Error al cargar estados:', textStatus, errorThrown);
-                    });
+                loadStates(countryId);
+
             } else {
                 $('#state_id').empty().append('<option value="">Seleccione un estado</option>').prop('disabled', true);
                 $('#city_id').empty().append('<option value="">Seleccione una ciudad</option>').prop('disabled', true);
@@ -272,20 +350,7 @@ $(document).ready(function() {
         $('#state_id').off('change').on('change', function() {
             var stateId = $(this).val();
             if (stateId) {
-                $.get('/api/cities/' + stateId)
-                    .done(function(data) {
-                        $('#city_id').empty().append('<option value="">Seleccione una ciudad</option>');
-                        $.each(data, function(key, value) {
-                            $('#city_id').append($('<option>', {
-                                value: key,
-                                text: value
-                            }));
-                        });
-                        $('#city_id').prop('disabled', false);
-                    })
-                    .fail(function(jqXHR, textStatus, errorThrown) {
-                        console.error('Error al cargar ciudades:', textStatus, errorThrown);
-                    });
+                loadCities(stateId);
             } else {
                 $('#city_id').empty().append('<option value="">Seleccione una ciudad</option>').prop('disabled', true);
             }

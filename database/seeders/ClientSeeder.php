@@ -22,11 +22,9 @@ class ClientSeeder extends Seeder
             'image' => 'default.jpg',
             'divition_id' => 1,
             'department_id' => 1,
-
-            'country_id' => 248,
+            'country_id' => 238,
             'state_id' => 4,
             'city_id' => 52,
-
             'created_at' => now(),
             'updated_at' => now(),
         ]);

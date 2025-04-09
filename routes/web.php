@@ -48,6 +48,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('settings/appearance', Appearance::class)->name('settings.appearance');
 
     Route::get('divitions/{divition}/departments', [DepartmentController::class, 'byDivition']);
+    Route::get('countries/{country}/states', [StateController::class, 'ByCountry']);
+    Route::get('states/{state}/cities', [CityController::class, 'ByState']);
 
 });
 
