@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests\ClientRequest;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
+use App\Http\Controllers\UserController; 
 
 use App\Helpers\AuditHelper;
 
@@ -21,6 +22,13 @@ use Throwable; // Importar la clase Throwable para capturar excepciones
 
 class ClientController extends Controller
 {
+    protected $userController;
+
+    public function __construct(UserController $userController)
+    {
+        $this->userController = $userController;
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -64,6 +72,12 @@ class ClientController extends Controller
 public function store(ClientRequest $request): RedirectResponse
 {
     try {
+
+        // Validar email único
+        $request->validate([
+            'email' => 'unique:users,email'
+        ]);
+
         // Validar la imagen primero
         if ($request->hasFile('image')) {
             $request->validate([
@@ -88,6 +102,20 @@ public function store(ClientRequest $request): RedirectResponse
         ]);
 
         $user = User::create($userData);
+
+
+        // Enviar correo de confirmación con manejo de errores
+        try {
+            $this->userController->sendConfirmationEmail($user);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            \Log::error('Error sending confirmation email: ' . $e->getMessage());
+            return Redirect::back()
+                ->with('error', 'User created but confirmation email could not be sent')
+                ->withInput();
+        }
+
+
 
         // Procesar la imagen si existe
         if ($request->hasFile('image')) {
