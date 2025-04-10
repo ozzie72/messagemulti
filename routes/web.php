@@ -51,6 +51,14 @@ Route::middleware(['auth'])->group(function () {
     Route::get('countries/{country}/states', [StateController::class, 'ByCountry']);
     Route::get('states/{state}/cities', [CityController::class, 'ByState']);
 
+    // Ruta para enviar el correo (protegida adecuadamente en producción)
+    Route::post('/users/{user}/send-confirmation', [UserController::class, 'sendConfirmationEmail'])
+    ->name('user.send-confirmation');
+
+    // Ruta para confirmar la cuenta
+    Route::get('/users/{user}/confirm', [UserController::class, 'confirm'])
+    ->name('user.confirm');
+
 });
 
 require __DIR__.'/auth.php';

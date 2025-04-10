@@ -13,7 +13,6 @@ use Illuminate\Http\Request;
 use App\Http\Requests\ClientRequest;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
-use Intervention\Image\Facades\Image; 
 
 use App\Helpers\AuditHelper;
 
@@ -78,7 +77,7 @@ public function store(ClientRequest $request): RedirectResponse
         $client = Client::create($request->validated());
 
         // Validar y crear el usuario asociado
-        $userData = $request->only(['name', 'username', 'email', 'phone', 'password']);
+        $userData = $request->only(['name', 'username', 'last_name','email', 'phone', 'password','country_id','state_id', 'country_id','state_id', 'city_id']);
         $userData['password'] = bcrypt($userData['password']);
         $userData = array_merge($userData, [
             'type' => 2,
@@ -88,27 +87,53 @@ public function store(ClientRequest $request): RedirectResponse
             'password_change' => now()->format('Y-m-d')
         ]);
 
-        dd($userData);
-
-
-
         $user = User::create($userData);
-
 
         // Procesar la imagen si existe
         if ($request->hasFile('image')) {
             try {
-                $imgName = $request->file('image');
-                $imagePath = 'assets/img/client-'.$client->id.'.jpg';
 
-                $image = Image::make($imgName)->resize(240, 80, function ($constraint) {
-                    $constraint->aspectRatio();
-                    $constraint->upsize();
-                });
-                
-                $image->save($imagePath);
-                $client->image = $imagePath;
-                $client->save();
+
+                if ($request->hasFile('image')) {
+                    try {
+                        $imgName = $request->file('image');
+                        $imagePath = 'assets/img/client-'.$client->id.'.jpg';
+                        
+                        // Crear imagen temporal
+                        list($width, $height) = getimagesize($imgName->getRealPath());
+                        $source = imagecreatefromstring(file_get_contents($imgName->getRealPath()));
+                        
+                        // Calcular nuevas dimensiones manteniendo aspect ratio
+                        $newWidth = 240;
+                        $newHeight = 80;
+                        $ratio = $width / $height;
+                        
+                        if ($newWidth / $newHeight > $ratio) {
+                            $newWidth = $newHeight * $ratio;
+                        } else {
+                            $newHeight = $newWidth / $ratio;
+                        }
+                        
+                        // Crear imagen redimensionada
+                        $thumb = imagecreatetruecolor($newWidth, $newHeight);
+                        imagecopyresampled($thumb, $source, 0, 0, 0, 0, $newWidth, $newHeight, $width, $height);
+                        
+                        // Guardar imagen
+                        imagejpeg($thumb, $imagePath, 90);
+                        
+                        // Liberar memoria
+                        imagedestroy($source);
+                        imagedestroy($thumb);
+                        
+                        $client->image = $imagePath;
+                        $client->save();
+                    } catch (\Exception $e) {
+                        throw new \Exception("Error processing image: " . $e->getMessage());
+                    }
+                }
+
+
+
             } catch (\Exception $e) {
                 throw new \Exception("Error processing image: " . $e->getMessage());
             }

@@ -17,8 +17,9 @@
             <!-- Pestaña Datos del Cliente -->
             <div class="tab-pane fade show active" id="client-data" role="tabpanel" aria-labelledby="client-tab">
                 <div class="row">
-                    <div class="col-md-12">
-                        <!-- Nuevo campo para la imagen con vista previa -->
+                    <!-- Columna izquierda -->
+                    <div class="col-md-6">
+                        <!-- Imagen -->
                         <div class="form-group mb-3">
                             <label for="image" class="form-label">{{ __('Logo de la Empresa') }}</label>
                             <div class="image-upload-container">
@@ -29,7 +30,6 @@
                                         <img id="imagePreview" src="" alt="Vista previa del logo" class="img-thumbnail d-none" style="max-width: 240px; max-height: 80px;">
                                     @endif
                                 </div>
-
                                 <input type="file" name="image" id="uploadBtn" class="form-control @error('image') is-invalid @enderror" accept="image/*">
                                 @error('image')
                                     <div class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></div>
@@ -49,17 +49,22 @@
                             <input type="text" name="ip" id="ip" class="form-control @error('ip') is-invalid @enderror" value="{{ old('ip', $client?->ip) }}" placeholder="Dirección de Servidor" maxlength="50">
                             @error('ip')<div class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></div>@enderror
                         </div>
-                        
+                    </div>
+                    
+                    <!-- Columna derecha -->
+                    <div class="col-md-6">
                         <div class="form-group mb-3">
                             <label for="port" class="form-label">{{ __('Puerto Conexión') }}</label>
                             <input type="text" name="port" id="port" class="form-control @error('port') is-invalid @enderror" value="{{ old('port', $client?->port) }}" placeholder="Puerto de Conexión">
                             @error('port')<div class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></div>@enderror
                         </div>
+                        
                         <div class="form-group mb-3">
                             <label for="server_user" class="form-label">{{ __('Usuario Servidor') }}</label>
                             <input type="text" name="server_user" id="server_user" class="form-control @error('server_user') is-invalid @enderror" value="{{ old('server_user', $client?->server_user) }}" placeholder="Nombre de Usuario" maxlength="50">
                             @error('server_user')<div class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></div>@enderror
                         </div>
+                        
                         <div class="form-group mb-3">
                             <label for="server_pass" class="form-label">{{ __('Contraseña Servidor') }}</label>
                             <input type="password" name="server_pass" id="server_pass" class="form-control @error('server_pass') is-invalid @enderror" value="{{ old('server_pass', $client?->server_pass) }}" placeholder="Contraseña Servidor" maxlength="100">
@@ -68,10 +73,12 @@
                     </div>
                 </div>
             </div>
+            
             <!-- Pestaña Datos del Usuario -->
             <div class="tab-pane fade" id="user-data" role="tabpanel" aria-labelledby="user-tab">
                 <div class="row">
-                    <div class="col-md-12">
+                    <!-- Columna izquierda -->
+                    <div class="col-md-6">
                         <div class="form-group mb-3">
                             <label for="name" class="form-label">{{ __('Nombre') }}</label>
                             <input type="text" name="name" id="name" class="form-control @error('name') is-invalid @enderror" value="{{ old('name', $client?->name) }}" placeholder="Nombre de Usuario" maxlength="50">
@@ -95,16 +102,22 @@
                             <input type="tel" name="phone" id="phone" class="form-control @error('phone') is-invalid @enderror" value="{{ old('phone', $client?->phone) }}" placeholder="584146352020" maxlength="12">
                             @error('phone')<div class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></div>@enderror
                         </div>
+                    </div>
+                    
+                    <!-- Columna derecha -->
+                    <div class="col-md-6">
                         <div class="form-group mb-3">
                             <label for="username" class="form-label">{{ __('Usuario') }}</label>
                             <input type="text" name="username" id="username" class="form-control @error('username') is-invalid @enderror" value="{{ old('username', $client?->username) }}" placeholder="Usuario Asignado" maxlength="50">
                             @error('username')<div class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></div>@enderror
                         </div>
+                        
                         <div class="form-group mb-3">
                             <label for="password" class="form-label">{{ __('Contraseña') }}</label>
                             <input type="text" name="password" id="password" class="form-control @error('password') is-invalid @enderror" value="{{ old('password', $client?->password) }}" placeholder="Contraseña Inicial" maxlength="50">
                             @error('password')<div class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></div>@enderror
                         </div>
+                        
                         <div class="form-group mb-3">
                             <label for="divition_id">Sucursal</label>
                             <select class="form-control" id="divition_id" name="divition_id" required>
@@ -123,50 +136,48 @@
                                 <option value="">Seleccione un Departamento</option>
                             </select>
                         </div>
-
+                    </div>
+                </div>
+                
+                <!-- Ubicación (ocupa todo el ancho) -->
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <div class="mb-3">
+                            <label for="country_id" class="form-label">País</label>
+                            <select class="form-select" id="country_id" name="country_id">
+                                <option value="">Seleccione un país</option>
+                                @foreach($countries as $country)
+                                    <option value="{{ $country->id }}" {{ old('country_id', $client->country_id ?? '') == $country->id ? 'selected' : '' }}>
+                                        {{ $country->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
                     </div>
 
-                        <!-- Cuarta fila - Ubicación -->
-                        <div class="row mb-3">
-                            <div class="col-md-4">
-                                <div class="mb-3">
-                                    <label for="country_id" class="form-label">País</label>
-                                    <select class="form-select" id="country_id" name="country_id">
-                                        <option value="">Seleccione un país</option>
-                                        @foreach($countries as $country)
-                                            <option value="{{ $country->id }}" {{ old('country_id', $client->country_id ?? '') == $country->id ? 'selected' : '' }}>
-                                                {{ $country->name }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="col-md-4">
-                                <div class="mb-3">
-                                    <label for="state_id" class="form-label">Estado/Provincia</label>
-                                    <select class="form-select" id="state_id" name="state_id" {{ !isset($client->state_id) && !old('state_id') ? 'disabled' : '' }}>
-                                        <option value="">Seleccione un estado</option>
-                                        @if(isset($client) && $client->state_id)
-                                            <option value="{{ $client->state_id }}" selected>{{ $client->state->name }}</option>
-                                        @endif
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="col-md-4">
-                                <div class="mb-3">
-                                    <label for="city_id" class="form-label">Ciudad</label>
-                                    <select class="form-select" id="city_id" name="city_id" {{ !isset($client->city_id) && !old('city_id') ? 'disabled' : '' }}>
-                                        <option value="">Seleccione una ciudad</option>
-                                        @if(isset($client) && $client->city_id)
-                                            <option value="{{ $client->city_id }}" selected>{{ $client->city->name }}</option>
-                                        @endif
-                                    </select>
-                                </div>
-                            </div>
+                    <div class="col-md-4">
+                        <div class="mb-3">
+                            <label for="state_id" class="form-label">Estado/Provincia</label>
+                            <select class="form-select" id="state_id" name="state_id" {{ !isset($client->state_id) && !old('state_id') ? 'disabled' : '' }}>
+                                <option value="">Seleccione un estado</option>
+                                @if(isset($client) && $client->state_id)
+                                    <option value="{{ $client->state_id }}" selected>{{ $client->state->name }}</option>
+                                @endif
+                            </select>
                         </div>
+                    </div>
 
+                    <div class="col-md-4">
+                        <div class="mb-3">
+                            <label for="city_id" class="form-label">Ciudad</label>
+                            <select class="form-select" id="city_id" name="city_id" {{ !isset($client->city_id) && !old('city_id') ? 'disabled' : '' }}>
+                                <option value="">Seleccione una ciudad</option>
+                                @if(isset($client) && $client->city_id)
+                                    <option value="{{ $client->city_id }}" selected>{{ $client->city->name }}</option>
+                                @endif
+                            </select>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
