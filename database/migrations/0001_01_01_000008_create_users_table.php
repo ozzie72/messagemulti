@@ -37,6 +37,7 @@ return new class extends Migration
             $table->integer('confirmation_code')->nullable();
             $table->rememberToken();
             $table->timestamps();
+            $table->foreignId('client_id')->nullable()->constrained('clients')->onDelete('set null');
             $table->unsignedBigInteger('country_id')->nullable();
             $table->foreign('country_id')->references('id')->on('countries')->onDelete('set null');
             $table->unsignedBigInteger('state_id')->nullable();

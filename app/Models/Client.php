@@ -146,4 +146,26 @@ class Client extends Model
             // $client->phoneLists()->delete();
         });
     }
+
+    /**
+     * Scope for filtering clients
+     */
+    public function scopeFilter($query, array $filters)
+    {
+        $query->when($filters['search'] ?? null, function ($query, $search) {
+            $query->where(function ($query) use ($search) {
+                $query->where('company', 'like', '%'.$search.'%')
+                    ->orWhere('name', 'like', '%'.$search.'%')
+                    ->orWhere('last_name', 'like', '%'.$search.'%');
+            });
+        })->when($filters['status'] ?? null, function ($query, $status) {
+            $query->where('status', $status);
+        })->when($filters['divition_id'] ?? null, function ($query, $divitionId) {
+            $query->where('divition_id', $divitionId);
+        })->when($filters['department_id'] ?? null, function ($query, $departmentId) {
+            $query->where('department_id', $departmentId);
+        });
+    }    
+
+
 }

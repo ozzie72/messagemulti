@@ -1,14 +1,28 @@
-@component('mail::message')
-# Hola {{ $user->name }},
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        h1: {
+            color: red;
+        }
 
-Por favor haz clic en el siguiente enlace para confirmar tu cuenta:
+    </style>
+</head>
+<body>
+    <h1># Hola {{ $user->name }}</h1>
 
-@component('mail::button', ['url' => $confirmationUrl])
-Confirmar Cuenta
-@endcomponent
+    {{ $confirmationUrl }}
 
-Si no creaste una cuenta, puedes ignorar este mensaje.
 
-Gracias,<br>
-{{ config('app.name') }}
-@endcomponent
+
+    Si no creaste una cuenta, puedes ignorar este mensaje.
+
+    Gracias,<br>
+    {{ config('app.name') }}
+
+    
+</body>
+</html>

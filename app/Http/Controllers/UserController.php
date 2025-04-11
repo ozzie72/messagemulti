@@ -14,6 +14,9 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
 
+use Illuminate\Support\Facades\Log;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
+
 use App\Helpers\AuditHelper;
 
 class UserController extends Controller
@@ -107,11 +110,15 @@ class UserController extends Controller
     }
 
 
-   /**
-     * Envía el correo de confirmación al usuario
-     */
-    public function sendConfirmationEmail(User $user)
-    {
+/**
+ * Envía el correo de confirmación al usuario
+ *
+ * @param \App\Models\User $user
+ * @return \Illuminate\Http\RedirectResponse
+ */
+public function sendConfirmationEmail(User $user)
+{
+    try {
         // Generar URL firmada temporal (24 horas de validez)
         $confirmationUrl = URL::temporarySignedRoute(
             'user.confirm',
@@ -123,8 +130,26 @@ class UserController extends Controller
         Mail::to($user->email)->send(new UserConfirmationMail($user, $confirmationUrl));
         
         return back()->with('success', 'Correo de confirmación enviado.');
+        
+    } catch (TransportExceptionInterface $e) {
+        // Error específico de envío de correo
+        Log::error('Error al enviar correo de confirmación: ' . $e->getMessage(), [
+            'user_id' => $user->id,
+            'exception' => $e
+        ]);
+        
+        return back()->with('error', 'No se pudo enviar el correo de confirmación. Error: ' . $e->getMessage());
+        
+    } catch (\Exception $e) {
+        // Cualquier otro tipo de error
+        Log::error('Error inesperado al enviar correo de confirmación: ' . $e->getMessage(), [
+            'user_id' => $user->id,
+            'exception' => $e
+        ]);
+        
+        return back()->with('error', 'Ocurrió un error inesperado al enviar el correo. Detalles: ' . $e->getMessage());
     }
-    
+}    
     /**
      * Confirma la cuenta del usuario
      */

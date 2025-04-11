@@ -13,10 +13,6 @@ use App\Http\Controllers\CountryController;
 use App\Http\Controllers\StateController; 
 use App\Http\Controllers\CityController; 
 
-//use App\Models\Divition;
-use App\Models\Department;
-
-
 Route::get('/', function () {
     return view('welcome');
 })->name('home');
