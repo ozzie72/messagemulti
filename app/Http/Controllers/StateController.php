@@ -87,4 +87,12 @@ class StateController extends Controller
         return Redirect::route('states.index')
             ->with('success', 'State deleted successfully');
     }
+
+    public function ByCountry($countryId)
+    {
+        return response()->json(
+            State::where('country_id', $countryId)->get()
+        );
+    }
+
 }

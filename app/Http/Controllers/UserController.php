@@ -9,6 +9,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\View\View;
 
+use App\Mail\UserConfirmationMail;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Str;
+
 use App\Helpers\AuditHelper;
 
 class UserController extends Controller
@@ -100,4 +105,40 @@ class UserController extends Controller
 
         return response()->json(['success' => 'Usuario eliminado exitosamente.']);
     }
+
+
+   /**
+     * Envía el correo de confirmación al usuario
+     */
+    public function sendConfirmationEmail(User $user)
+    {
+        // Generar URL firmada temporal (24 horas de validez)
+        $confirmationUrl = URL::temporarySignedRoute(
+            'user.confirm',
+            now()->addHours(24),
+            ['user' => $user->id]
+        );
+        
+        // Enviar el correo
+        Mail::to($user->email)->send(new UserConfirmationMail($user, $confirmationUrl));
+        
+        return back()->with('success', 'Correo de confirmación enviado.');
+    }
+    
+    /**
+     * Confirma la cuenta del usuario
+     */
+    public function confirm(Request $request, User $user)
+    {
+        // Verificar que la URL sea válida y no haya expirado
+        if (!$request->hasValidSignature()) {
+            abort(403, 'El enlace de confirmación es inválido o ha expirado.');
+        }
+        
+        // Actualizar el campo confirmed
+        $user->update(['confirmed' => true]);
+        
+        return redirect()->route('/')->with('success', 'Cuenta confirmada exitosamente.');
+    }
+
 }
