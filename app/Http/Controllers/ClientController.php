@@ -23,7 +23,7 @@ use Throwable; // Importar la clase Throwable para capturar excepciones
 class ClientController extends Controller
 {
     protected $userController;
-
+    
     public function __construct(UserController $userController)
     {
         $this->userController = $userController;
@@ -48,7 +48,10 @@ class ClientController extends Controller
                 ->make(true);
         }
 
-        return view('modules.client.index');
+        $this->linkPrev = 'Inicio';
+        $this->linkCurrent = 'Clientes';
+
+        return view('modules.client.index', ['linkPrev' => $this->linkPrev, 'linkCurrent' => $this->linkCurrent]);
     }
 
     /**
@@ -59,8 +62,12 @@ class ClientController extends Controller
         $client = new Client();
         $divitions = Divition::all();
         $countries = Country::all();
+        
+        $linkPrev = $this->linkPrev = 'Inicio';
+        $linkCurrent = $this->linkCurrent = 'Crear clientes';
 
-        return view('modules.client.create', compact('client', 'divitions','countries'));
+        
+        return view('modules.client.create', compact('client', 'divitions','countries', 'linkPrev', 'linkCurrent'));
     }
 
     /**
@@ -81,7 +88,7 @@ public function store(ClientRequest $request): RedirectResponse
         // Validar la imagen primero
         if ($request->hasFile('image')) {
             $request->validate([
-                'image' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
+                'image' => 'image|mimes:jpeg,png,jpg|max:2048',
             ]);
         }
 
@@ -120,12 +127,15 @@ public function store(ClientRequest $request): RedirectResponse
         // Procesar la imagen si existe
         if ($request->hasFile('image')) {
             try {
-
+                
 
                 if ($request->hasFile('image')) {
                     try {
+                        $posExtension = strrpos($image, '.');
                         $imgName = $request->file('image');
-                        $imagePath = 'assets/img/client-'.$client->id.'.jpg';
+                        $path = public_path() . '/storage/img/';
+                       
+                        $imagePath = $path. 'client-'.$client->id.$posExtension;
                         
                         // Crear imagen temporal
                         list($width, $height) = getimagesize($imgName->getRealPath());
@@ -206,8 +216,10 @@ public function store(ClientRequest $request): RedirectResponse
         $client = Client::find($id);
         $divitions = Divition::all();
         $countries = Country::all();
+        $linkPrev = $this->linkPrev = 'Inicio';
+        $linkCurrent = $this->linkCurrent = 'Crear clientes'; 
 
-        return view('modules.client.edit', compact('client','divitions','countries'));
+        return view('modules.client.edit', compact('client','divitions','countries', 'linkPrev', 'linkCurrent'));
     }
 
     /**
