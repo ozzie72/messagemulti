@@ -1,14 +1,15 @@
 @extends('components.layouts.main')
-
-@section('title')
-    Clients
-@endsection
-
 @section('content')
-    <div class="container-fluid">
+ 
+    <style>
+        .dataTables_wrapper .dataTables_length select {
+            width : 60px;
+        }
+    </style>
+    <section class="content container">
         <div class="row">
             <div class="col-sm-12">
-                <div class="card">
+                <div class="card card-responsive">
                     <div class="card-header">
                         <div style="display: flex; justify-content: space-between; align-items: center;">
 
@@ -23,15 +24,9 @@
                               </div>
                         </div>
                     </div>
-                    @if ($message = Session::get('success'))
-                        <div class="alert alert-success m-4">
-                            <p>{{ $message }}</p>
-                        </div>
-                    @endif
-
                     <div class="card-body bg-white">
                         <div class="table-responsive">
-                            <table class="table table-striped table-hover" id="clients-table">
+                            <table class="table responsive table-striped table-hover" width=100% id="clients-table">
                                 <thead class="thead">
                                     <tr>
                                         <th>No</th>
@@ -51,15 +46,17 @@
                 </div>
             </div>
         </div>
-    </div>
-
+    </section>
+    @section('scripts')
     <script>
+    
     $(document).ready(function() {
         // Inicializar DataTable
         var table = $('#clients-table').DataTable({
-            language: {url: "https://cdn.datatables.net/plug-ins/1.13.7/i18n/es-ES.json"},
+            language: {url: "{{asset('assets/js/es-MX.json')}}"},
             processing: true,
             serverSide: true,
+            responsive: true,
             ajax: {
                 url: "{{ route('clients.index') }}",
                 type: 'GET'
@@ -112,6 +109,7 @@
             }
         });
     });
-</script>
-
+    </script>
+    @endsection
 @endsection
+

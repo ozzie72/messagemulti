@@ -36,8 +36,9 @@ class UserController extends Controller
                 ->rawColumns(['action'])
                 ->make(true);
         }
-        
-        return view('modules.users.index');
+        $this->linkPrev = 'Inicio';
+        $this->linkCurrent = 'Usuarios';
+        return view('modules.users.index', ['linkPrev' => $this->linkPrev, 'linkCurrent' => $this->linkCurrent]);
     }
 
     public function create(): View

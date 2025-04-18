@@ -12,6 +12,7 @@ use App\Http\Controllers\DivitionController;
 use App\Http\Controllers\CountryController; 
 use App\Http\Controllers\StateController; 
 use App\Http\Controllers\CityController; 
+use App\Http\Controllers\SettingsController; 
 
 //use App\Models\Divition;
 use App\Models\Department;
@@ -21,9 +22,13 @@ Route::get('/', function () {
     return view('welcome');
 })->name('home');
 
-Route::view('dashboard', 'dashboard')
-    ->middleware(['auth', 'verified'])
-    ->name('dashboard');
+Route::get('dashboard', function () {
+    $linkPrev = 'Inicio';
+    $linkCurrent = 'Dashboard';
+    return view('dashboard', compact('linkPrev', 'linkCurrent'));
+})->middleware(['auth', 'verified'])
+->name('dashboard');
+
 
 Route::middleware(['auth'])->group(function () {
 
@@ -43,9 +48,10 @@ Route::middleware(['auth'])->group(function () {
 
     Route::resource('clients', ClientController::class);
 
-    Route::get('settings/profile', Profile::class)->name('settings.profile');
-    Route::get('settings/password', Password::class)->name('settings.password');
-    Route::get('settings/appearance', Appearance::class)->name('settings.appearance');
+    
+    Route::get('settings/profile', [SettingsController::class, 'profile'])->name('settings.profile');
+    Route::get('settings/password', [SettingsController::class, 'password'])->name('settings.password');
+    Route::get('settings/appearance', [SettingsController::class, 'appearance'])->name('settings.appearance');
 
     Route::get('divitions/{divition}/departments', [DepartmentController::class, 'byDivition']);
     Route::get('countries/{country}/states', [StateController::class, 'ByCountry']);

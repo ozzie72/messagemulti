@@ -25,9 +25,9 @@
                             <div class="image-upload-container">
                                 <div class="image-preview mb-2">
                                     @if(isset($client) && $client->image)
-                                        <img id="imagePreview" src="{{ asset($client->image) }}" alt="Vista previa del logo" class="img-thumbnail" style="max-width: 240px; max-height: 80px;">
+                                        <img id="imagePreview" src="{{ file_exists(asset($client->image)) ? asset($client->image) : asset('assets/img/logo_empresa_default.png') }}" alt="Vista previa del logo" class="img-thumbnail" style="max-width: 240px; max-height: 80px;">
                                     @else
-                                        <img id="imagePreview" src="" alt="Vista previa del logo" class="img-thumbnail d-none" style="max-width: 240px; max-height: 80px;">
+                                        <img id="imagePreview" src="{{ asset('assets/img/logo_empresa_default.png') }}" alt="Vista previa del logo" class="img-thumbnail d-none" style="max-width: 240px; max-height: 80px;">
                                     @endif
                                 </div>
                                 <input type="file" name="image" id="uploadBtn" class="form-control @error('image') is-invalid @enderror" accept="image/*">
@@ -118,67 +118,16 @@
                             @error('password')<div class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></div>@enderror
                         </div>
                         
-                        <div class="form-group mb-3">
-                            <label for="divition_id">Sucursal</label>
-                            <select class="form-control" id="divition_id" name="divition_id" required>
-                                <option value="">Seleccione una Sucursal</option>
-                                @foreach($divitions as $divition)
-                                    <option value="{{ $divition->id }}" {{ old('divition_id', $client?->divition_id) == $divition->id ? 'selected' : '' }}>
-                                        {{ $divition->name }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
-
-                        <div class="form-group mb-3">
-                            <label for="department_id">Departmento</label>
-                            <select class="form-control" id="department_id" name="department_id" required disabled>
-                                <option value="">Seleccione un Departamento</option>
-                            </select>
-                        </div>
+                        @livewire('utils.departments-selects', ['client' => $client ?? null ])
                     </div>
+                </div>
+                <div>
+                    @livewire('utils.regions-selects', ['client' => $client ?? null ])
+                    {{-- <livewire:utils.dependent-selects />  --}}
                 </div>
                 
-                <!-- Ubicación (ocupa todo el ancho) -->
-                <div class="row mb-3">
-                    <div class="col-md-4">
-                        <div class="mb-3">
-                            <label for="country_id" class="form-label">País</label>
-                            <select class="form-select" id="country_id" name="country_id">
-                                <option value="">Seleccione un país</option>
-                                @foreach($countries as $country)
-                                    <option value="{{ $country->id }}" {{ old('country_id', $client->country_id ?? '') == $country->id ? 'selected' : '' }}>
-                                        {{ $country->name }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="col-md-4">
-                        <div class="mb-3">
-                            <label for="state_id" class="form-label">Estado/Provincia</label>
-                            <select class="form-select" id="state_id" name="state_id" {{ !isset($client->state_id) && !old('state_id') ? 'disabled' : '' }}>
-                                <option value="">Seleccione un estado</option>
-                                @if(isset($client) && $client->state_id)
-                                    <option value="{{ $client->state_id }}" selected>{{ $client->state->name }}</option>
-                                @endif
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="col-md-4">
-                        <div class="mb-3">
-                            <label for="city_id" class="form-label">Ciudad</label>
-                            <select class="form-select" id="city_id" name="city_id" {{ !isset($client->city_id) && !old('city_id') ? 'disabled' : '' }}>
-                                <option value="">Seleccione una ciudad</option>
-                                @if(isset($client) && $client->city_id)
-                                    <option value="{{ $client->city_id }}" selected>{{ $client->city->name }}</option>
-                                @endif
-                            </select>
-                        </div>
-                    </div>
-                </div>
+                
+               
             </div>
         </div>
     </div>
@@ -188,7 +137,7 @@
         <button type="submit" class="btn btn-primary">{{ __('Submit') }}</button>
     </div>
 </div>
-
+@section('script')
 <script>
 $(document).ready(function() {
     console.log('Document ready ejecutado'); // Para depuración
@@ -200,127 +149,7 @@ $(document).ready(function() {
     const imagePreview = document.getElementById('imagePreview');
 
 
-    // Funcion para cargar estados
-    function loadStates(countryId) {
-        const stateSelect = document.getElementById('state_id');
-        const citySelect = document.getElementById('city_id');
-
-        if (countryId) {
-            fetch(`/countries/${countryId}/states`)
-                .then(response => {
-                    if (!response.ok) throw new Error('Error en la respuesta del servidor');
-                    return response.json();
-                })
-                .then(data => {
-                    // Limpiar y preparar el select
-                    stateSelect.innerHTML = '<option value="">Seleccione un estado</option>';
-                    stateSelect.disabled = false;
-                    
-                    // Iterar con forEach
-                    data.forEach(state => {
-                        const option = document.createElement('option');
-                        option.value = state.id;       // Asumiendo que cada estado tiene 'id'
-                        option.textContent = state.name; // Asumiendo que cada estado tiene 'name'
-                        stateSelect.appendChild(option);
-                    });
-
-                    // Resetear el select de ciudades
-                    citySelect.innerHTML = '<option value="">Seleccione una ciudad</option>';
-                    citySelect.disabled = true;
-                })
-                .catch(error => {
-                    console.error('Error al cargar estados:', error);
-                    stateSelect.innerHTML = '<option value="">Error cargando estados</option>';
-                });
-
-                const preselectedStateId = "{{ old('state_id', $client?->state_id) }}";
-                if (preselectedStateId) {
-                    loadCities(preselectedStateId);
-                }
-
-        } else {
-            // Resetear ambos selects si no hay countryId
-            stateSelect.innerHTML = '<option value="">Seleccione un estado</option>';
-            stateSelect.disabled = true;
-            
-            citySelect.innerHTML = '<option value="">Seleccione una ciudad</option>';
-            citySelect.disabled = true;
-        }
-    }
-
-    // Función para cargar ciudades
-    function loadCities(stateId) {
-        const citySelect = document.getElementById('city_id');
-        const stateSelect = document.getElementById('state_id');
-
-        if (stateId) {
-            fetch(`/states/${stateId}/cities`)
-                .then(response => {
-                    if (!response.ok) throw new Error('Error en la respuesta del servidor');
-                    return response.json();
-                })
-                .then(data => {
-                    // Limpiar y preparar el select
-                    citySelect.innerHTML = '<option value="">Seleccione una ciudad</option>';
-                    citySelect.disabled = false;
-                    
-                    // Iterar con forEach
-                    data.forEach(city => {
-                        const option = document.createElement('option');
-                        option.value = city.id;
-                        option.textContent = city.name;
-                        
-                        // Opcional: Marcar como seleccionado si coincide con un valor previo
-                        if (city.id == "{{ old('city_id', $client?->city_id) }}") {
-                            option.selected = true;
-                        }
-                        
-                        citySelect.appendChild(option);
-                    });
-                })
-                .catch(error => {
-                    console.error('Error al cargar ciudades:', error);
-                    citySelect.innerHTML = '<option value="">Error cargando ciudades</option>';
-                });
-        } else {
-            // Resetear el select de ciudades si no hay stateId
-            citySelect.innerHTML = '<option value="">Seleccione una ciudad</option>';
-            citySelect.disabled = true;
-        }
-    }
-
-
     // Función para cargar departamentos
-    function loadDepartments(divitionId) {
-        if (divitionId) {
-            departmentSelect.disabled = false;
-            
-                fetch(`/divitions/${divitionId}/departments`)
-                .then(response => {
-                    if (!response.ok) throw new Error('Network response was not ok');
-                    return response.json();
-                })
-                .then(data => {
-                    departmentSelect.innerHTML = '<option value="">Seleccione un Departamento</option>';
-                    data.forEach(department => {
-                        const option = document.createElement('option');
-                        option.value = department.id;
-                        option.textContent = department.name;
-                        if (department.id == "{{ old('department_id', $client?->department_id) }}") {
-                            option.selected = true;
-                        }
-                        departmentSelect.appendChild(option);
-                    });
-                })
-                .catch(error => {
-                    console.error('Error fetching departments:', error);
-                    departmentSelect.innerHTML = '<option value="">Error loading departments</option>';
-                });
-        } else {
-            departmentSelect.disabled = true;
-            departmentSelect.innerHTML = '<option value="">Seleccione un Departamento</option>';
-        }
-    }
 
     // Inicialización de tabs
     function initTabs() {
@@ -331,40 +160,6 @@ $(document).ready(function() {
                 var tab = new bootstrap.Tab(tabEl);
                 tab.show();
             });
-        });
-    }
-
-    // Manejo de países, estados y ciudades
-    function initLocationSelects() {
-        console.log('Inicializando location selects'); // Para depuración
-        
-        // Verificamos que el elemento exista
-        if (!$('#country_id').length) {
-            console.error('Elemento #country_id no encontrado');
-            return;
-        }
-
-        // Asignamos el evento change
-        $('#country_id').off('change').on('change', function() {
-            console.log('Cambio detectado en country_id', $(this).val()); // Para depuración
-            
-            var countryId = $(this).val();
-            if (countryId) {
-                loadStates(countryId);
-
-            } else {
-                $('#state_id').empty().append('<option value="">Seleccione un estado</option>').prop('disabled', true);
-                $('#city_id').empty().append('<option value="">Seleccione una ciudad</option>').prop('disabled', true);
-            }
-        });
-
-        $('#state_id').off('change').on('change', function() {
-            var stateId = $(this).val();
-            if (stateId) {
-                loadCities(stateId);
-            } else {
-                $('#city_id').empty().append('<option value="">Seleccione una ciudad</option>').prop('disabled', true);
-            }
         });
     }
 
@@ -393,47 +188,12 @@ $(document).ready(function() {
         });
     }
 
-    // Cargar valores antiguos
-    function loadOldValues() {
-        @if(old('country_id'))
-            console.log('Cargando valores antiguos para country_id'); // Para depuración
-            $('#country_id').trigger('change');
-            setTimeout(function() {
-                $('#state_id').val('{{ old('state_id') }}').trigger('change');
-            }, 500);
-        @endif
-
-        @if(old('state_id'))
-            setTimeout(function() {
-                $('#city_id').val('{{ old('city_id') }}');
-            }, 1000);
-        @endif
-
-        @if(old('divition_id'))
-            $('#divition_id').trigger('change');
-            setTimeout(function() {
-                $('#department_id').val('{{ old('department_id') }}');
-            }, 500);
-        @endif
-    }
-
     // Inicialización
     initTabs();
     initLocationSelects();
     initImagePreview();
     
-    // Cargar departamentos si hay una sucursal seleccionada
-    if (divitionSelect && divitionSelect.value) {
-        loadDepartments(divitionSelect.value);
-    }
-
-    // Evento para divition_id
-    if (divitionSelect) {
-        divitionSelect.addEventListener('change', function() {
-            loadDepartments(this.value);
-        });
-    }
-
-    loadOldValues();
+   
 });
 </script>
+@endsection
