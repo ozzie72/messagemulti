@@ -7,8 +7,8 @@
         <a href="{{route('dashboard')}}" class="logo">
            
             <picture>
-                <source srcset="{{ asset('assets/img/logo_total_texto_blanco.png') }}" media="(prefers-color-scheme: dark)">
-                <img src="{{ asset('assets/img/logo_total_texto_azul.png') }}" width=150px alt="logo_totaltexto">
+                <source srcset="{{ asset('assets/img/message_logo_blanco.png') }}" media="(prefers-color-scheme: dark)">
+                <img src="{{ asset('assets/img/message_logo_client.png') }}" width=200px alt="logo_message">
             </picture>
       
         </a>
