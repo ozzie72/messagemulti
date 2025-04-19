@@ -9,10 +9,16 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\View\View;
 
+use App\Mail\UserConfirmationMail;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Str;
+
 use App\Helpers\AuditHelper;
 
 class UserController extends Controller
 {
+   
     public function index(Request $request)
     {
         if ($request->ajax()) {
@@ -31,14 +37,17 @@ class UserController extends Controller
                 ->rawColumns(['action'])
                 ->make(true);
         }
-        
-        return view('modules.users.index');
+        $this->linkPrev = 'Inicio';
+        $this->linkCurrent = 'Usuarios';
+        return view('modules.users.index', ['linkPrev' => $this->linkPrev, 'linkCurrent' => $this->linkCurrent]);
     }
 
     public function create(): View
     {
         $roles = Role::all();
-        return view('modules.users.create', compact('roles'));
+        $linkPrev =  $this->linkPrev = 'Inicio';
+        $linkCurrent = $this->linkCurrent = 'Crear usuario';
+        return view('modules.users.create', compact('roles', 'linkPrev','linkCurrent'));
     }
 
     public function store(Request $request): RedirectResponse
@@ -65,7 +74,9 @@ class UserController extends Controller
     {
         $user = User::with('roles')->findOrFail($id);
         $roles = Role::all();
-        return view('modules.users.edit', compact('user', 'roles'));
+        $linkPrev =  $this->linkPrev = 'Inicio';
+        $linkCurrent = $this->linkCurrent = 'Crear usuario';
+        return view('modules.users.edit', compact('user', 'roles', 'linkPrev','linkCurrent'));
     }
 
     public function update(Request $request, $id): RedirectResponse
@@ -100,4 +111,40 @@ class UserController extends Controller
 
         return response()->json(['success' => 'Usuario eliminado exitosamente.']);
     }
+
+
+   /**
+     * Envía el correo de confirmación al usuario
+     */
+    public function sendConfirmationEmail(User $user)
+    {
+        // Generar URL firmada temporal (24 horas de validez)
+        $confirmationUrl = URL::temporarySignedRoute(
+            'user.confirm',
+            now()->addHours(24),
+            ['user' => $user->id]
+        );
+        
+        // Enviar el correo
+        Mail::to($user->email)->send(new UserConfirmationMail($user, $confirmationUrl));
+        
+        return back()->with('success', 'Correo de confirmación enviado.');
+    }
+    
+    /**
+     * Confirma la cuenta del usuario
+     */
+    public function confirm(Request $request, User $user)
+    {
+        // Verificar que la URL sea válida y no haya expirado
+        if (!$request->hasValidSignature()) {
+            abort(403, 'El enlace de confirmación es inválido o ha expirado.');
+        }
+        
+        // Actualizar el campo confirmed
+        $user->update(['confirmed' => true]);
+        
+        return redirect()->route('/')->with('success', 'Cuenta confirmada exitosamente.');
+    }
+
 }

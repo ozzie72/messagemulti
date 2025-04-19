@@ -88,4 +88,13 @@ class CityController extends Controller
         return Redirect::route('cities.index')
             ->with('success', 'City deleted successfully');
     }
+
+    public function ByState($stateId)
+    {
+        return response()->json(
+            City::where('state_id', $stateId)->get()
+        );
+    }
+
+
 }
