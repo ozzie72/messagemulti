@@ -16,9 +16,15 @@ class DepartmentsSelects extends Component
     public $departments = [];
 
     public function mount($client) {
-
+        
         $this->client = $client;
         $this->divitions =  Divition::select('id', 'name')->get();
+        if($this->client?->divition_id) {
+            $this->divitionId = $this->client->divition_id;
+        }
+        if($this->client?->department_id) {
+            $this->departmentId = $this->client->department_id;
+        }
         
     }
 

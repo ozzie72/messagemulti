@@ -36,7 +36,12 @@
 		<link rel="stylesheet" href="{{asset('assets/vendor/bootstrap-datepicker/css/bootstrap-datepicker3.css')}}" />
 		<link rel="stylesheet" href="{{asset('assets/vendor/jquery-ui/jquery-ui.css')}}" />
 		<link rel="stylesheet" href="{{asset('assets/vendor/jquery-ui/jquery-ui.theme.css')}}" />
+		<link rel="stylesheet" href="{{asset('assets/vendor/select2/css/select2.css')}}" />
+		<link rel="stylesheet" href="{{asset('assets/vendor/select2-bootstrap-theme/select2-bootstrap.min.css')}}" />
 		<link rel="stylesheet" href="{{asset('assets/vendor/bootstrap-multiselect/css/bootstrap-multiselect.css')}}" />
+		<link rel="stylesheet" href="{{asset('assets/vendor/bootstrap-tagsinput/bootstrap-tagsinput.css')}}" />
+		<link rel="stylesheet" href="{{asset('assets/vendor/bootstrap-colorpicker/css/bootstrap-colorpicker.css')}}" />
+		<link rel="stylesheet" href="{{asset('assets/vendor/bootstrap-timepicker/css/bootstrap-timepicker.css')}}" />
 		<link rel="stylesheet" href="{{asset('assets/vendor/morris/morris.css')}}" />
 		<link rel="preconnect" href="https://fonts.bunny.net">
 		<link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
