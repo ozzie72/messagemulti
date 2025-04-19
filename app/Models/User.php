@@ -14,7 +14,7 @@ use Spatie\Permission\Models\Permission;
 
 use App\Models\Client;
 
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable, HasRoles, HasApiTokens; //
@@ -105,6 +105,21 @@ class User extends Authenticatable
         });
     }
 
+
+    public function hasVerifiedEmail()
+    {
+        return !is_null($this->email_verified_at);
+    }
+
+    public function markEmailAsVerified()
+    {
+        $this->forceFill([
+            'email_verified_at' => $this->freshTimestamp(),
+            'confirmed' => 1 // Actualiza tu campo personalizado
+        ])->save();
+
+        return true;
+    }
 
 
 }

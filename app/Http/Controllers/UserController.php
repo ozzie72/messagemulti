@@ -109,61 +109,64 @@ class UserController extends Controller
         return response()->json(['success' => 'Usuario eliminado exitosamente.']);
     }
 
+    public function sendConfirmationEmail(User $user)
+    {
+        try {
+            $url = URL::temporarySignedRoute(
+                'user.confirm',
+                now()->addHours(48),
+                ['user' => $user->id]
+            );
 
-/**
- * Envía el correo de confirmación al usuario
- *
- * @param \App\Models\User $user
- * @return \Illuminate\Http\RedirectResponse
- */
-public function sendConfirmationEmail(User $user)
-{
-    try {
-        // Generar URL firmada temporal (24 horas de validez)
-        $confirmationUrl = URL::temporarySignedRoute(
-            'user.confirm',
-            now()->addHours(24),
-            ['user' => $user->id]
-        );
-        
-        // Enviar el correo
-        Mail::to($user->email)->send(new UserConfirmationMail($user, $confirmationUrl));
-        
-        return back()->with('success', 'Correo de confirmación enviado.');
-        
-    } catch (TransportExceptionInterface $e) {
-        // Error específico de envío de correo
-        Log::error('Error al enviar correo de confirmación: ' . $e->getMessage(), [
-            'user_id' => $user->id,
-            'exception' => $e
-        ]);
-        
-        return back()->with('error', 'No se pudo enviar el correo de confirmación. Error: ' . $e->getMessage());
-        
-    } catch (\Exception $e) {
-        // Cualquier otro tipo de error
-        Log::error('Error inesperado al enviar correo de confirmación: ' . $e->getMessage(), [
-            'user_id' => $user->id,
-            'exception' => $e
-        ]);
-        
-        return back()->with('error', 'Ocurrió un error inesperado al enviar el correo. Detalles: ' . $e->getMessage());
+            Mail::to($user->email)->send(new UserConfirmationMail($user, $url));
+
+            return response()->json(['message' => 'Email de confirmación enviado exitosamente']);
+        } catch (TransportExceptionInterface $e) {
+            Log::error('Error al enviar email de confirmación: ' . $e->getMessage());
+            return response()->json(['error' => 'Error al enviar el email de confirmación'], 500);
+        }
     }
-}    
-    /**
-     * Confirma la cuenta del usuario
-     */
+
+    public function OLDconfirm(Request $request, User $user)
+    {
+        if (!$request->hasValidSignature()) {
+            return redirect()->route('home')->with('error', 'El enlace de confirmación no es válido o ha expirado.');
+        }
+
+        $user->email_verified_at = now();
+        $user->save();
+
+        AuditHelper::log('user_confirmed', 'El usuario confirmó su cuenta', $user);
+
+        return redirect()->route('home')->with('success', 'Tu cuenta ha sido verificada exitosamente.');
+    }
+
     public function confirm(Request $request, User $user)
     {
-        // Verificar que la URL sea válida y no haya expirado
         if (!$request->hasValidSignature()) {
-            abort(403, 'El enlace de confirmación es inválido o ha expirado.');
+            return redirect()->route('home')->with('error', 'El enlace de confirmación no es válido o ha expirado.');
         }
-        
-        // Actualizar el campo confirmed
-        $user->update(['confirmed' => true]);
-        
-        return redirect()->route('/')->with('success', 'Cuenta confirmada exitosamente.');
+    
+        if ($user->hasVerifiedEmail()) {
+            return redirect()->route('home')->with('info', 'Este correo ya ha sido verificado anteriormente.');
+        }
+    
+        $user->markEmailAsVerified();
+    
+        AuditHelper::log('user_confirmed', 'El usuario confirmó su cuenta', $user);
+    
+        return redirect()->route('dashboard')->with('success', 'Tu cuenta ha sido verificada exitosamente.');
     }
+
+
+
+
+
+
+    public function confirmed(Request $request, User $user)
+    {
+        return redirect()->route('logout');
+    }
+
 
 }

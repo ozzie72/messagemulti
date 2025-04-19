@@ -29,7 +29,7 @@ return new class extends Migration
             $table->tinyInteger('status')->nullable()->default(1);
             $table->integer('type')->default(3); // 1 => TotalTexto Admin - 2 => Cliente Admin - 3 => Cliente User
             $table->char('user_status',1)->default('P'); // A => Activo - B => Bloqueado - P => Pendiente
-            $table->char('client_status',1)->default('A');; // A => Activo - I => Inactivo
+            $table->char('client_status',1)->default('A'); // A => Activo - I => Inactivo
             $table->timestamp('password_change')->nullable(); // Fecha del Ultimo Cambio
             $table->timestamp('failed_date')->nullable(); // Fecha del Ultimo Intento
             $table->integer('failed_count')->nullable(); // Cantidad Intentos
@@ -37,7 +37,6 @@ return new class extends Migration
             $table->integer('confirmation_code')->nullable();
             $table->rememberToken();
             $table->timestamps();
-            $table->foreignId('client_id')->nullable()->constrained('clients')->onDelete('set null');
             $table->unsignedBigInteger('country_id')->nullable();
             $table->foreign('country_id')->references('id')->on('countries')->onDelete('set null');
             $table->unsignedBigInteger('state_id')->nullable();
@@ -60,7 +59,6 @@ return new class extends Migration
             $table->longText('payload');
             $table->integer('last_activity')->index();
         });
-
     }
 
     /**
@@ -68,8 +66,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('users');
-        Schema::dropIfExists('password_reset_tokens');
         Schema::dropIfExists('sessions');
+        Schema::dropIfExists('password_reset_tokens');
+        Schema::dropIfExists('users');
     }
 };

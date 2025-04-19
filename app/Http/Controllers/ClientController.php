@@ -15,6 +15,9 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
 use App\Http\Controllers\UserController; 
 
+//use App\Libraries\Pdf\Fpdf;
+use App\Libraries\Pdf\WriteTag;
+
 use App\Helpers\AuditHelper;
 
 use Illuminate\Support\Facades\DB; // Importar la clase DB para transacciones
@@ -66,54 +69,51 @@ class ClientController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-/**
- * Store a newly created resource in storage.
- */
-public function store(ClientRequest $request): RedirectResponse
-{
-    try {
-
-        // Validar email único
-        $request->validate([
-            'email' => 'unique:users,email'
-        ]);
-
-        // Validar la imagen primero
-        if ($request->hasFile('image')) {
-            $request->validate([
-                'image' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
-            ]);
-        }
-
-        DB::beginTransaction();
-
-        // Crear el cliente
-        $client = Client::create($request->validated());
-
-        // Validar y crear el usuario asociado
-        $userData = $request->only(['name', 'username', 'last_name','email', 'phone', 'password','country_id','state_id', 'country_id','state_id', 'city_id']);
-        $userData['password'] = bcrypt($userData['password']);
-        $userData = array_merge($userData, [
-            'type' => 2,
-            'client_status' => 'A',
-            'user_status' => 'P',
-            'client_id' => $client->id,
-            'password_change' => now()->format('Y-m-d')
-        ]);
-
-        $user = User::create($userData);
-
-
-        // Enviar correo de confirmación con manejo de errores
+    public function store(ClientRequest $request): RedirectResponse
+    {
         try {
-            $this->userController->sendConfirmationEmail($user);
-        } catch (\Exception $e) {
-            DB::rollBack();
-            \Log::error('Error sending confirmation email: ' . $e->getMessage());
-            return Redirect::back()
-                ->with('error', 'User created but confirmation email could not be sent')
-                ->withInput();
-        }
+
+            // Validar email único
+            $request->validate([
+                'email' => 'unique:users,email'
+            ]);
+
+            // Validar la imagen primero
+            if ($request->hasFile('image')) {
+                $request->validate([
+                    'image' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
+                ]);
+            }
+
+            DB::beginTransaction();
+
+            // Crear el cliente
+            $client = Client::create($request->validated());
+
+            // Validar y crear el usuario asociado
+            $userData = $request->only(['name', 'username', 'last_name','email', 'phone', 'password','country_id','state_id', 'country_id','state_id', 'city_id']);
+            $userData['password'] = bcrypt($userData['password']);
+            $userData = array_merge($userData, [
+                'type' => 2,
+                'client_status' => 'A',
+                'user_status' => 'P',
+                'client_id' => $client->id,
+                'password_change' => now()->format('Y-m-d')
+            ]);
+
+            $user = User::create($userData);
+
+
+            // Enviar correo de confirmación con manejo de errores
+            try {
+                $this->userController->sendConfirmationEmail($user);
+            } catch (\Exception $e) {
+                DB::rollBack();
+                \Log::error('Error sending confirmation email: ' . $e->getMessage());
+                return Redirect::back()
+                    ->with('error', 'User created but confirmation email could not be sent')
+                    ->withInput();
+            }
 
 
 
@@ -169,6 +169,14 @@ public function store(ClientRequest $request): RedirectResponse
 
         DB::commit();
 
+        AuditHelper::log('Cliente creado', [
+            'action' => 'create',
+            'client_id' => $client->id,
+            'data' => $client->toArray(),
+            'section' => 'clients'
+        ]);        
+
+
         return Redirect::route('clients.index')
             ->with('success', 'Client created successfully.');
 
@@ -217,15 +225,32 @@ public function store(ClientRequest $request): RedirectResponse
     {
         $client->update($request->validated());
 
+        AuditHelper::log('Cliente actualizado', [
+            'action' => 'update',
+            'client_id' => $client->id,
+            'old_data' => $oldData,
+            'new_data' => $client->fresh()->toArray(),
+            'section' => 'clients'
+        ]);        
+
         return Redirect::route('clients.index')
             ->with('success', 'Client updated successfully');
     }
 
     public function destroy($id): RedirectResponse
     {
-        Client::find($id)->delete();
+        $client = Client::find($id);
+        $clientData =  $client->toArray();
+        $client->delete();
+
+        AuditHelper::log('Cliente eliminado', [
+            'action' => 'delete',
+            'deleted_data' => $clientData,
+            'section' => 'countries'
+        ]);        
 
         return Redirect::route('clients.index')
             ->with('success', 'Client deleted successfully');
     }
+
 }
