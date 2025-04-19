@@ -18,6 +18,7 @@ use App\Helpers\AuditHelper;
 
 class UserController extends Controller
 {
+   
     public function index(Request $request)
     {
         if ($request->ajax()) {
@@ -44,7 +45,9 @@ class UserController extends Controller
     public function create(): View
     {
         $roles = Role::all();
-        return view('modules.users.create', compact('roles'));
+        $linkPrev =  $this->linkPrev = 'Inicio';
+        $linkCurrent = $this->linkCurrent = 'Crear usuario';
+        return view('modules.users.create', compact('roles', 'linkPrev','linkCurrent'));
     }
 
     public function store(Request $request): RedirectResponse
@@ -71,7 +74,9 @@ class UserController extends Controller
     {
         $user = User::with('roles')->findOrFail($id);
         $roles = Role::all();
-        return view('modules.users.edit', compact('user', 'roles'));
+        $linkPrev =  $this->linkPrev = 'Inicio';
+        $linkCurrent = $this->linkCurrent = 'Crear usuario';
+        return view('modules.users.edit', compact('user', 'roles', 'linkPrev','linkCurrent'));
     }
 
     public function update(Request $request, $id): RedirectResponse
