@@ -23,6 +23,16 @@ class RegionsSelects extends Component
         $this->countries =  Country::select('id', 'name')->get();
         $this->states = State::where('country_id', $this->countryId)
         ->select('id', 'name')->get();
+        if( $this->client?->state_id){
+            $this->stateId = $this->client->state_id;
+        }
+        if( $this->client?->city_id){
+           
+            $this->cities = City::where('state_id', $this->client->state_id)
+            ->select('id', 'name')->get();
+            
+            $this->cityId = $this->client->city_id;
+        }
     }
 
     public function updatedCountryId($countryId)
