@@ -32,6 +32,10 @@ class ClientRequest extends FormRequest
             'image'  => 'required|image|mimes:jpeg,jpg',
             'divition_id' => 'required|exists:divitions,id',
             'department_id' => 'required|exists:departments,id',
+            'country_id' => 'required|exists:countries,id',
+            'state_id' => 'required|exists:states,id',
+            'city_id' => 'required|exists:cities,id'
+
         ];
     }
 }

@@ -25,6 +25,11 @@ return new class extends Migration
             $table->tinyInteger('status')->nullable()->default(1);
             $table->foreignId('divition_id')->constrained();
             $table->foreignId('department_id')->constrained();
+
+            $table->foreignId('country_id')->constrained();
+            $table->foreignId('state_id')->constrained();
+            $table->foreignId('city_id')->constrained();
+
             $table->timestamps();
         });
     }

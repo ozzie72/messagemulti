@@ -98,4 +98,11 @@ class DepartmentController extends Controller
         return Redirect::route('departments.index')
             ->with('success', 'Department deleted successfully');
     }
+
+    public function ByDivition($divitionId)
+    {
+        return response()->json(
+            Department::where('divition_id', $divitionId)->get()
+        );
+    }
 }
