@@ -10,7 +10,7 @@
 
                     <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
                         <div class="float-left">
-                            <span class="card-title">{{ __('Update') }} {{ __('Password') }}</span>
+                            <span class="card-title">{{ __('Actualizar') }} {{ __('Contraseña') }}</span>
                         </div>
                         
                     </div>
