@@ -13,6 +13,8 @@ use App\Mail\UserConfirmationMail;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Auth;
 
 use App\Helpers\AuditHelper;
 
@@ -146,5 +148,22 @@ class UserController extends Controller
         
         return redirect()->route('/')->with('success', 'Cuenta confirmada exitosamente.');
     }
+    
+    /**
+    * Log the user out of the application.
+    */
+    public function logout(Request $request): RedirectResponse
+    {
+        
+        Auth::logout();
+    
+        $request->session()->invalidate();
+    
+        $request->session()->regenerateToken();
+    
+        return redirect('/')->with('message', 'La salida del sistema se completo.');
+    }
+    
+       
 
 }

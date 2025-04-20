@@ -39,5 +39,7 @@ class Password extends Component
         $this->reset('current_password', 'password', 'password_confirmation');
 
         $this->dispatch('password-updated');
+
+        $this->redirect('/users/logout'); 
     }
 }
