@@ -103,6 +103,9 @@
                         <a role="menuitem" tabindex="-1" href="{{route('settings.profile')}}"><i class="bx bx-user-circle"></i> Mi perfil</a>
                     </li>
                     <li>
+                        <a role="menuitem" tabindex="-1" href="{{route('settings.password')}}"><i class="bx bx-low-vision"></i> Cambiar contraseña</a>
+                    </li>
+                    <li>
                         <a role="menuitem" tabindex="-1" href="{{route('users.logout')}}"><i class="bx bx-power-off"></i> Salir del sistema</a>
                     </li>
                 </ul>

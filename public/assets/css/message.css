@@ -3,13 +3,13 @@
 
 @font-face {
     font-family: 'Montserrat';
-    src: url(/fuentes/Montserrat-VariableFont_wght.ttf);
+    src: url(../fuentes/Montserrat-VariableFont_wght.ttf);
     font-style: normal;
     font-weight: normal;
 }
 @font-face {
     font-family: 'Myriadpro';
-    src: url(/fuentes/MYRIADPRO-REGULAR.woff);
+    src: url(../fuentes/MYRIADPRO-REGULAR.woff);
     font-weight: normal;
     font-style: normal;
 }
@@ -34,7 +34,8 @@ body{
 
 }
 .header-section-wrapper {  
-    background: url(img/Fondo\ principal.png) top / cover no-repeat; /* SimplificaciÃ³n de propiedades de fondo */  
+    /* background: url(../img/Fondo_principal.png) top / cover no-repeat;  */
+    
     width: 100vw;  
     height: 100vh;  
     justify-content: center;  
