@@ -1,12 +1,15 @@
 @extends('components.layouts.main')
-@section('content')
- 
-    <style>
+@push('styles')
+<style>
         .dataTables_wrapper .dataTables_length select {
             width : 60px;
         }
-    </style>
-    <section class="content container">
+</style>
+@endpush
+@section('content')
+ 
+   
+    <section role="main" >
         <div class="row">
             <div class="col-sm-12">
                 <div class="card card-responsive">

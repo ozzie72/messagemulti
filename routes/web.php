@@ -40,7 +40,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::resource('cities', CityController::class);
 
-    // Route::resource('users', UserController::class);
+    Route::resource('users', UserController::class);
 
     Route::resource('divitions', DivitionController::class);
 
@@ -64,11 +64,7 @@ Route::middleware(['auth'])->group(function () {
     // Ruta para confirmar la cuenta
     Route::get('/users/{user}/confirm', [UserController::class, 'confirm'])
     ->name('user.confirm');
-    Route::post('/users/logout', [UserController::class, 'logout'])
-    ->name('users.logout');
-    Route::get('users/logout', [UserController::class, 'logout']);
-    Route::get('users', [UserController::class, 'index'])->name('users.index');
-
+    
 });
 
 require __DIR__.'/auth.php';
