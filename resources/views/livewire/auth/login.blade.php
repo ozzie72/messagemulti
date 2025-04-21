@@ -2,7 +2,7 @@
         <div>
             <section class="section-container-4">
                 <div class="container-txt-4">
-                    <a href="{{ route('home') }}" class="flex flex-col items-center gap-2 font-medium" wire:navigate>
+                    <a href="{{ route('home') }}" class="flex flex-col items-center gap-2 font-medium mt-4" wire:navigate>
                     
                         <x-app-logo-icon class="size-9 fill-current text-black dark:text-white" />
                   
