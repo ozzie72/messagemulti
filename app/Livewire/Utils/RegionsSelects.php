@@ -10,9 +10,9 @@ use App\Models\City;
 class RegionsSelects extends Component
 {
     public $countryId = '238';
-    public $stateId = '';
-    public $cityId = '';
-    public $client = '';
+    public $stateId = "";
+    public $cityId = "";
+    public $client = "";
     
     public $states = [];
     public $cities = [];
@@ -35,20 +35,32 @@ class RegionsSelects extends Component
         }
     }
 
+    public function rules(): array {
+        return [
+            'countryId' => 'required|exists:countries,id',
+            'stateId' => 'required|exists:states,id',
+            'cityId' => 'required|exists:cities,id',
+        ];
+    }
+
+
     public function updatedCountryId($countryId)
     {
-       
+        $this->reset(['stateId', 'cityId', 'states', 'cities']);
+        
         $this->states = State::where('country_id', $countryId)
         ->select('id', 'name')->get();
+       
     }
 
     public function updatedStateId($stateId)
     {
+        $this->reset(['cityId', 'cities']);
         if($this->countryId && $stateId) {
             $this->cities = City::where('state_id', $stateId)
             ->select('id', 'name')->get();
         }
-        $this->reset('cityId');
+       
     }
 
 

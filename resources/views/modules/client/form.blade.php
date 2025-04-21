@@ -139,7 +139,10 @@
 </div>
 @section('script')
 <script>
+   
+   
 $(document).ready(function() {
+    
     console.log('Document ready ejecutado'); // Para depuración
     
     // Elementos del DOM
