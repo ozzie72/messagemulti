@@ -2,6 +2,7 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="fixed">
 	
 @include('partials.head')
+@stack('styles')
 
 <body class="alternative-font-4 loading-overlay-showing" data-plugin-page-transition data-loading-overlay data-plugin-options="{'hideDelay': 100}" >
     <div class="loading-overlay">
@@ -20,10 +21,10 @@
                 <p>{{ $message }}</p>
             </div>
         @endif
-        <div class="container">
+        <section role="main" class="content-body">
             @include('partials.heading')
             @yield('content')
-        </div>
+        </section>
         @fluxScripts
         @livewireScripts
     </div>

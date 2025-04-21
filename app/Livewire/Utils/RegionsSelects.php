@@ -47,7 +47,7 @@ class RegionsSelects extends Component
     public function updatedCountryId($country_id)
     {
         $this->reset(['state_id', 'city_id', 'states', 'cities']);
-        
+        $this->countries =  Country::select('id', 'name')->get();
         $this->states = State::where('country_id', $country_id)
         ->select('id', 'name')->get();
        
@@ -57,11 +57,19 @@ class RegionsSelects extends Component
     {
         $this->reset(['city_id', 'cities']);
         if($this->country_id && $state_id) {
+            $this->states = State::where('country_id', $this->country_id)
+            ->select('id', 'name')->get();
             $this->cities = City::where('state_id', $state_id)
             ->select('id', 'name')->get();
         }
        
     }
+
+    public function render()
+    {
+        return view('livewire.utils.regions-selects');
+    }
+
 
 
 }
