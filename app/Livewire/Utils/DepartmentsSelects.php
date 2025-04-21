@@ -8,8 +8,8 @@ use App\Models\Department;
 
 class DepartmentsSelects extends Component
 {
-    public $divitionId = '';
-    public $departmentId = '';
+    public $divition_id = '';
+    public $department_id = '';
     public $client = '';
     
     public $divitions = [];
@@ -30,10 +30,10 @@ class DepartmentsSelects extends Component
         
     }
 
-    public function updatedDivitionId($divitionId)
+    public function updatedDivitionId($divition_id)
     {
-       
-        $this->departments = Department::where('divition_id', $divitionId)
+        $this->reset(['department_id', 'departments']);
+        $this->departments = Department::where('divition_id', $divition_id)
         ->select('id', 'name')->get();
     }
 
