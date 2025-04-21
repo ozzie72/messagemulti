@@ -9,9 +9,9 @@ use App\Models\City;
 
 class RegionsSelects extends Component
 {
-    public $countryId = '238';
-    public $stateId = "";
-    public $cityId = "";
+    public $country_id = '238';
+    public $state_id = "";
+    public $city_id = "";
     public $client = "";
     
     public $states = [];
@@ -21,7 +21,7 @@ class RegionsSelects extends Component
     public function mount($client) {
         $this->client = $client;
         $this->countries =  Country::select('id', 'name')->get();
-        $this->states = State::where('country_id', $this->countryId)
+        $this->states = State::where('country_id', $this->country_id)
         ->select('id', 'name')->get();
         if( $this->client?->state_id){
             $this->stateId = $this->client->state_id;
@@ -37,27 +37,27 @@ class RegionsSelects extends Component
 
     public function rules(): array {
         return [
-            'countryId' => 'required|exists:countries,id',
-            'stateId' => 'required|exists:states,id',
-            'cityId' => 'required|exists:cities,id',
+            'country_id' => 'required|exists:countries,id',
+            'state_id' => 'required|exists:states,id',
+            'city_id' => 'required|exists:cities,id',
         ];
     }
 
 
-    public function updatedCountryId($countryId)
+    public function updatedCountryId($country_id)
     {
-        $this->reset(['stateId', 'cityId', 'states', 'cities']);
+        $this->reset(['state_id', 'city_id', 'states', 'cities']);
         
-        $this->states = State::where('country_id', $countryId)
+        $this->states = State::where('country_id', $country_id)
         ->select('id', 'name')->get();
        
     }
 
-    public function updatedStateId($stateId)
+    public function updatedStateId($state_id)
     {
-        $this->reset(['cityId', 'cities']);
-        if($this->countryId && $stateId) {
-            $this->cities = City::where('state_id', $stateId)
+        $this->reset(['city_id', 'cities']);
+        if($this->country_id && $state_id) {
+            $this->cities = City::where('state_id', $state_id)
             ->select('id', 'name')->get();
         }
        
