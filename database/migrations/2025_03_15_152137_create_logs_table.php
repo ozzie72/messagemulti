@@ -15,9 +15,13 @@ class CreateLogsTable extends Migration
         Schema::create('logs', function (Blueprint $table) {
             //
             $table->increments('id');
-            $table->unsignedBigInteger('user_id')->unsigned();
-            $table->text('operation');
-            $table->string('ip',50);
+            $table->unsignedBigInteger('user_id')->unsigned()->nullable();
+            $table->string('operation'); // O text() si puede ser muy largo
+            $table->string('ip', 50);
+            $table->string('method', 10)->nullable(); // GET, POST, etc.
+            $table->text('url')->nullable(); // URL completa puede ser larga
+            $table->json('type')->nullable(); // Para guardar objetos JSON
+            $table->text('details')->nullable(); // Texto largo para detalles
             $table->timestamps();
         });
 

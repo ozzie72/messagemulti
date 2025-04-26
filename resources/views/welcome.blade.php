@@ -12,6 +12,7 @@
         <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
         <link rel="stylesheet" href="{{asset('assets/css/message.css')}}">
         </script><script src="{{asset('assets/js/scrollreveal.js')}}"></script>
+
         <!-- Styles -->
       
     </head>

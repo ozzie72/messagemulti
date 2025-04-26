@@ -13,10 +13,9 @@ use App\Http\Controllers\CountryController;
 use App\Http\Controllers\StateController; 
 use App\Http\Controllers\CityController; 
 use App\Http\Controllers\SettingsController; 
+use App\Http\Controllers\LogController; 
 
-//use App\Models\Divition;
-use App\Models\Department;
-
+use App\Http\Controllers\PdfController; 
 
 Route::get('/', function () {
     return view('welcome');
@@ -29,6 +28,7 @@ Route::get('dashboard', function () {
 })->middleware(['auth', 'verified'])
 ->name('dashboard');
 
+Route::get('/test', [PdfController::class, 'index']);
 
 Route::middleware(['auth'])->group(function () {
 
@@ -56,15 +56,25 @@ Route::middleware(['auth'])->group(function () {
     Route::get('divitions/{divition}/departments', [DepartmentController::class, 'byDivition']);
     Route::get('countries/{country}/states', [StateController::class, 'ByCountry']);
     Route::get('states/{state}/cities', [CityController::class, 'ByState']);
-
+    
     // Ruta para enviar el correo (protegida adecuadamente en producción)
     Route::post('/users/{user}/send-confirmation', [UserController::class, 'sendConfirmationEmail'])
     ->name('user.send-confirmation');
-
-    // Ruta para confirmar la cuenta
-    Route::get('/users/{user}/confirm', [UserController::class, 'confirm'])
-    ->name('user.confirm');
     
+    Route::resource('logs', LogController::class);
+
 });
 
+// Ruta para confirmar el usuario
+Route::get('/users/{user}/confirm', [UserController::class, 'confirm'])
+->name('user.confirm');
+
+// Ruta para confirmar el usuario
+Route::get('/users/{user}/confirmed', [UserController::class, 'confirmed'])
+->name('user.confirmed');
+
+
+
 require __DIR__.'/auth.php';
+
+

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Activación de Correo Electrónico</title>
+    <title>Document</title>
     <style>
         h1: {
             color: red;
@@ -12,9 +12,10 @@
 </head>
 <body>
     <h1>Hola {{ $user->name }}</h1>
-    <p>Para activar la cuenta haga click en el siguiente enlace: <strong>{{ $confirmationUrl }}</strong></p>
-    <p>Si no ha creado una cuenta, puede ignorar este mensaje.</p>
-    <p>Gracias.</p>
+    <h3>Gracias!</h3>
+    <p>Su cuenta ha sido activada satisfactoriamente. Puede iniciar sesión con las credenciales proporcionadas.</p>
+    <br>
+    <a href="http://127.0.0.1:8000"></a>
     <br>
     {{ config('app.name') }}
 </body>

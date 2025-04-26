@@ -4,8 +4,6 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-use Spatie\Permission\Models\Role; // Importar el modelo Role /////////////////////////
-
 return new class extends Migration
 {
     /**
@@ -29,37 +27,22 @@ return new class extends Migration
             $table->tinyInteger('status')->nullable()->default(1);
             $table->integer('type')->default(3); // 1 => TotalTexto Admin - 2 => Cliente Admin - 3 => Cliente User
             $table->char('user_status',1)->default('P'); // A => Activo - B => Bloqueado - P => Pendiente
-            $table->char('client_status',1)->default('A');; // A => Activo - I => Inactivo
+            $table->char('client_status',1)->default('A'); // A => Activo - I => Inactivo
             $table->timestamp('password_change')->nullable(); // Fecha del Ultimo Cambio
             $table->timestamp('failed_date')->nullable(); // Fecha del Ultimo Intento
             $table->integer('failed_count')->nullable(); // Cantidad Intentos
             $table->boolean('confirmed')->default(0);
             $table->integer('confirmation_code')->nullable();
+            $table->timestamp('password_expires_at')->nullable(); // Nuevo campo para la fecha de expiración de la contraseña
             $table->rememberToken();
             $table->timestamps();
-            $table->unsignedBigInteger('country_id')->nullable();
-            $table->foreign('country_id')->references('id')->on('countries')->onDelete('set null');
-            $table->unsignedBigInteger('state_id')->nullable();
-            $table->foreign('state_id')->references('id')->on('states')->onDelete('set null');
-            $table->unsignedBigInteger('city_id')->nullable();
-            $table->foreign('city_id')->references('id')->on('cities')->onDelete('set null');
+            $table->foreignId('country_id')->nullable()->constrained()->onDelete('set null');
+            $table->foreignId('state_id')->nullable()->constrained()->onDelete('set null');
+            $table->foreignId('city_id')->nullable()->constrained()->onDelete('set null');
+            $table->foreignId('divition_id')->nullable()->constrained()->onDelete('set null');
+            $table->foreignId('department_id')->nullable()->constrained()->onDelete('set null');
         });
         
-        Schema::create('password_reset_tokens', function (Blueprint $table) {
-            $table->string('email')->primary();
-            $table->string('token');
-            $table->timestamp('created_at')->nullable();
-        });
-
-        Schema::create('sessions', function (Blueprint $table) {
-            $table->string('id')->primary();
-            $table->foreignId('user_id')->nullable()->index();
-            $table->string('ip_address', 45)->nullable();
-            $table->text('user_agent')->nullable();
-            $table->longText('payload');
-            $table->integer('last_activity')->index();
-        });
-
     }
 
     /**
@@ -68,7 +51,5 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('users');
-        Schema::dropIfExists('password_reset_tokens');
-        Schema::dropIfExists('sessions');
     }
 };
