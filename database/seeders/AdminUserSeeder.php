@@ -20,6 +20,9 @@ class AdminUserSeeder extends Seeder
             'email' => 'admin@admin.com',
             'password' => Hash::make('admin'), 
             'client_id' => 1, // Asignar client_id = 1
+            'email_verified_at' => now(),
+            'confirmed' => 1,
+
         ]);
 
         // Asignar el rol de administrador (si tienes roles definidos)
