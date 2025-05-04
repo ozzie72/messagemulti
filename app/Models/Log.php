@@ -1,29 +1,46 @@
 <?php
 
-namespace App\Models; // Si usas Laravel 8+
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * Class Log
+ *
+ * @property $id
+ * @property $user_id
+ * @property $operation
+ * @property $ip
+ * @property $method
+ * @property $url
+ * @property $type
+ * @property $details
+ * @property $created_at
+ * @property $updated_at
+ *
+ * @property User $user
+ * @package App
+ * @mixin \Illuminate\Database\Eloquent\Builder
+ */
 class Log extends Model
 {
-    protected $table = 'logs';
     
-    protected $fillable = [
-        'operation', 
-        'ip', 
-        'user_id',
-        'type',
-        'details',
-        'url',
-        'method'
-    ];
+    protected $perPage = 20;
 
-    protected $casts = [
-        'details' => 'array' // Para manejar automáticamente los detalles como array
-    ];
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
+    protected $fillable = ['user_id', 'operation', 'ip', 'method', 'url', 'type', 'details'];
 
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function user()
     {
-        return $this->belongsTo('App\Models\User');
+        return $this->belongsTo(\App\Models\User::class, 'user_id', 'id');
     }
+    
 }

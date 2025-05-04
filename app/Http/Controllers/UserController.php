@@ -9,10 +9,21 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\View\View;
 
+use App\Mail\UserConfirmationMail;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Str;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Auth;
+
+use Illuminate\Support\Facades\Log;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
+
 use App\Helpers\AuditHelper;
 
 class UserController extends Controller
 {
+   
     public function index(Request $request)
     {
         if ($request->ajax()) {
@@ -31,14 +42,17 @@ class UserController extends Controller
                 ->rawColumns(['action'])
                 ->make(true);
         }
-        
-        return view('modules.users.index');
+        $this->linkPrev = 'Inicio';
+        $this->linkCurrent = 'Usuarios';
+        return view('modules.users.index', ['linkPrev' => $this->linkPrev, 'linkCurrent' => $this->linkCurrent]);
     }
 
     public function create(): View
     {
         $roles = Role::all();
-        return view('modules.users.create', compact('roles'));
+        $linkPrev =  $this->linkPrev = 'Inicio';
+        $linkCurrent = $this->linkCurrent = 'Crear usuario';
+        return view('modules.users.create', compact('roles', 'linkPrev','linkCurrent'));
     }
 
     public function store(Request $request): RedirectResponse
@@ -65,7 +79,9 @@ class UserController extends Controller
     {
         $user = User::with('roles')->findOrFail($id);
         $roles = Role::all();
-        return view('modules.users.edit', compact('user', 'roles'));
+        $linkPrev =  $this->linkPrev = 'Inicio';
+        $linkCurrent = $this->linkCurrent = 'Crear usuario';
+        return view('modules.users.edit', compact('user', 'roles', 'linkPrev','linkCurrent'));
     }
 
     public function update(Request $request, $id): RedirectResponse
@@ -100,4 +116,82 @@ class UserController extends Controller
 
         return response()->json(['success' => 'Usuario eliminado exitosamente.']);
     }
+
+    public function sendConfirmationEmail(User $user)
+    {
+        try {
+            $url = URL::temporarySignedRoute(
+                'user.confirm',
+                now()->addHours(48),
+                ['user' => $user->id]
+            );
+
+            Mail::to($user->email)->send(new UserConfirmationMail($user, $url));
+
+            return response()->json(['message' => 'Email de confirmación enviado exitosamente']);
+        } catch (TransportExceptionInterface $e) {
+            Log::error('Error al enviar email de confirmación: ' . $e->getMessage());
+            return response()->json(['error' => 'Error al enviar el email de confirmación'], 500);
+        }
+    }
+    
+    /**
+    * Log the user out of the application.
+    */
+    public function logout(Request $request): RedirectResponse
+    {
+        
+        Auth::logout();
+    
+        $request->session()->invalidate();
+    
+        $request->session()->regenerateToken();
+    
+        return redirect('/')->with('message', 'La salida del sistema se completo.');
+    }
+    
+       
+
+    public function OLDconfirm(Request $request, User $user)
+    {
+        if (!$request->hasValidSignature()) {
+            return redirect()->route('home')->with('error', 'El enlace de confirmación no es válido o ha expirado.');
+        }
+
+        $user->email_verified_at = now();
+        $user->save();
+
+        AuditHelper::log('user_confirmed', 'El usuario confirmó su cuenta', $user);
+
+        return redirect()->route('home')->with('success', 'Tu cuenta ha sido verificada exitosamente.');
+    }
+
+    public function confirm(Request $request, User $user)
+    {
+        if (!$request->hasValidSignature()) {
+            return redirect()->route('home')->with('error', 'El enlace de confirmación no es válido o ha expirado.');
+        }
+    
+        if ($user->hasVerifiedEmail()) {
+            return redirect()->route('home')->with('info', 'Este correo ya ha sido verificado anteriormente.');
+        }
+    
+        $user->markEmailAsVerified();
+    
+        AuditHelper::log('user_confirmed', 'El usuario confirmó su cuenta', $user);
+    
+        return redirect()->route('dashboard')->with('success', 'Tu cuenta ha sido verificada exitosamente.');
+    }
+
+
+
+
+
+
+    public function confirmed(Request $request, User $user)
+    {
+        return redirect()->route('logout');
+    }
+
+
 }

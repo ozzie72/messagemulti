@@ -12,18 +12,23 @@ use App\Http\Controllers\DivitionController;
 use App\Http\Controllers\CountryController; 
 use App\Http\Controllers\StateController; 
 use App\Http\Controllers\CityController; 
+use App\Http\Controllers\SettingsController; 
+use App\Http\Controllers\LogController; 
 
-//use App\Models\Divition;
-use App\Models\Department;
-
+use App\Http\Controllers\PdfController; 
 
 Route::get('/', function () {
     return view('welcome');
 })->name('home');
 
-Route::view('dashboard', 'dashboard')
-    ->middleware(['auth', 'verified'])
-    ->name('dashboard');
+Route::get('dashboard', function () {
+    $linkPrev = 'Inicio';
+    $linkCurrent = 'Dashboard';
+    return view('dashboard', compact('linkPrev', 'linkCurrent'));
+})->middleware(['auth', 'verified'])
+->name('dashboard');
+
+Route::get('/test', [PdfController::class, 'index']);
 
 Route::middleware(['auth'])->group(function () {
 
@@ -43,17 +48,33 @@ Route::middleware(['auth'])->group(function () {
 
     Route::resource('clients', ClientController::class);
 
-    Route::get('settings/profile', Profile::class)->name('settings.profile');
-    Route::get('settings/password', Password::class)->name('settings.password');
-    Route::get('settings/appearance', Appearance::class)->name('settings.appearance');
-   
-    Route::get('divitions/{divition}/departments', function ($divitionId) {
-        return response()->json(
-            Department::where('divition_id', $divitionId)->get()
-        );
-    });
+    
+    Route::get('settings/profile', [SettingsController::class, 'profile'])->name('settings.profile');
+    Route::get('settings/password', [SettingsController::class, 'password'])->name('settings.password');
+    Route::get('settings/appearance', [SettingsController::class, 'appearance'])->name('settings.appearance');
 
+    Route::get('divitions/{divition}/departments', [DepartmentController::class, 'byDivition']);
+    Route::get('countries/{country}/states', [StateController::class, 'ByCountry']);
+    Route::get('states/{state}/cities', [CityController::class, 'ByState']);
+    
+    // Ruta para enviar el correo (protegida adecuadamente en producción)
+    Route::post('/users/{user}/send-confirmation', [UserController::class, 'sendConfirmationEmail'])
+    ->name('user.send-confirmation');
+    
+    Route::resource('logs', LogController::class);
 
 });
 
+// Ruta para confirmar el usuario
+Route::get('/users/{user}/confirm', [UserController::class, 'confirm'])
+->name('user.confirm');
+
+// Ruta para confirmar el usuario
+Route::get('/users/{user}/confirmed', [UserController::class, 'confirmed'])
+->name('user.confirmed');
+
+
+
 require __DIR__.'/auth.php';
+
+

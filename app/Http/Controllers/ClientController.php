@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Models\Client;
 use App\Models\Divition;
+use App\Models\Country;
 use Yajra\DataTables\Facades\DataTables;
 
 use Illuminate\Http\RedirectResponse;
@@ -11,12 +13,25 @@ use Illuminate\Http\Request;
 use App\Http\Requests\ClientRequest;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
-use Intervention\Image\Facades\Image; 
+use App\Http\Controllers\UserController; 
+
+//use App\Libraries\Pdf\Fpdf;
+use App\Libraries\Pdf\WriteTag;
 
 use App\Helpers\AuditHelper;
 
+use Illuminate\Support\Facades\DB; // Importar la clase DB para transacciones
+use Throwable; // Importar la clase Throwable para capturar excepciones
+
 class ClientController extends Controller
 {
+    protected $userController;
+    
+    public function __construct(UserController $userController)
+    {
+        $this->userController = $userController;
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -36,7 +51,10 @@ class ClientController extends Controller
                 ->make(true);
         }
 
-        return view('modules.client.index');
+        $this->linkPrev = 'Inicio';
+        $this->linkCurrent = 'Clientes';
+
+        return view('modules.client.index', ['linkPrev' => $this->linkPrev, 'linkCurrent' => $this->linkCurrent]);
     }
 
     /**
@@ -46,8 +64,13 @@ class ClientController extends Controller
     {
         $client = new Client();
         $divitions = Divition::all();
+        $countries = Country::all();
+        
+        $linkPrev = $this->linkPrev = 'Inicio';
+        $linkCurrent = $this->linkCurrent = 'Crear clientes';
 
-        return view('modules.client.create', compact('client', 'divitions'));
+        
+        return view('modules.client.create', compact('client', 'divitions','countries', 'linkPrev', 'linkCurrent'));
     }
 
     /**
@@ -56,77 +79,132 @@ class ClientController extends Controller
     public function store(ClientRequest $request): RedirectResponse
     {
         try {
-            // Iniciar una transacción de base de datos para asegurar la atomicidad
-            DB::beginTransaction();
-                
-            $validated['divition_id'] = $request->divition_id;
-            $validated['department_id'] = $request->department_id;
 
-            // Crear el cliente y capturar el objeto creado
+            // Validar email único
+            $request->validate([
+                'email' => 'unique:users,email'
+            ]);
+
+            // Validar la imagen primero
+            if ($request->hasFile('image')) {
+                $request->validate([
+                    'image' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
+                ]);
+            }
+
+            DB::beginTransaction();
+
+            // Crear el cliente
             $client = Client::create($request->validated());
-    
-            // Utilizar el ID del cliente creado
-            User::create([
-                'name' => $request->input('name'),
-                'username' => $request->input('username'),
-                'email' => $request->input('email'),
-                'phone' => $request->input('phone'),
-                'password' => bcrypt($request->input('password')),
+
+            // Validar y crear el usuario asociado
+            $userData = $request->only(['name', 'username', 'last_name','email', 'phone', 'password','country_id','state_id', 'country_id','state_id', 'city_id']);
+            $userData['password'] = bcrypt($userData['password']);
+            $userData = array_merge($userData, [
                 'type' => 2,
                 'client_status' => 'A',
                 'user_status' => 'P',
-                'client_id' => $client->id, // Utilizar el ID del cliente
-
-                'password_change' => Date::now()->format('Y-m-d') // Utilizar Date::now() es mas claro
+                'client_id' => $client->id,
+                'password_change' => now()->format('Y-m-d')
             ]);
-    
-            // Confirmar la transacción si todo fue exitoso
-            DB::commit();
 
-            
+            $user = User::create($userData);
 
-            $imgName = $request->file('image');
 
-            $image = Image::make($imgName)->resize(240, 80, function ($constraint) {
-                $constraint->aspectRatio();
-                $constraint->upsize();
-            });
-            $image->save('assets/img/client-'.$client->id.'.jpg');
-    
-            $client->image = 'assets/img/client-'.$client->id.'.jpg';
-            $client->save();
+            // Enviar correo de confirmación con manejo de errores
+            try {
+                $this->userController->sendConfirmationEmail($user);
+            } catch (\Exception $e) {
+                DB::rollBack();
+                \Log::error('Error sending confirmation email: ' . $e->getMessage());
+                return Redirect::back()
+                    ->with('error', 'User created but confirmation email could not be sent')
+                    ->withInput();
+            }
 
 
 
+        // Procesar la imagen si existe
+        if ($request->hasFile('image')) {
+            try {
+                
 
-            return Redirect::route('clients.index')
-                ->with('success', 'Client created successfully.');
-        } catch (Throwable $e) {
-            // Revertir la transacción en caso de error
-            DB::rollBack();
-    
-            // Registrar el error (puedes utilizar logs para esto)
-            \Log::error('Error creating client or user: ' . $e->getMessage());
-    
-            // Redirigir con un mensaje de error
-            return Redirect::route('clients.index')
-                ->with('error', 'An error occurred while creating the client.');
+                if ($request->hasFile('image')) {
+                    try {
+                        $posExtension = strrpos($image, '.');
+                        $imgName = $request->file('image');
+                        $path = public_path() . '/storage/img/';
+                       
+                        $imagePath = $path. 'client-'.$client->id.$posExtension;
+                        
+                        // Crear imagen temporal
+                        list($width, $height) = getimagesize($imgName->getRealPath());
+                        $source = imagecreatefromstring(file_get_contents($imgName->getRealPath()));
+                        
+                        // Calcular nuevas dimensiones manteniendo aspect ratio
+                        $newWidth = 240;
+                        $newHeight = 80;
+                        $ratio = $width / $height;
+                        
+                        if ($newWidth / $newHeight > $ratio) {
+                            $newWidth = $newHeight * $ratio;
+                        } else {
+                            $newHeight = $newWidth / $ratio;
+                        }
+                        
+                        // Crear imagen redimensionada
+                        $thumb = imagecreatetruecolor($newWidth, $newHeight);
+                        imagecopyresampled($thumb, $source, 0, 0, 0, 0, $newWidth, $newHeight, $width, $height);
+                        
+                        // Guardar imagen
+                        imagejpeg($thumb, $imagePath, 90);
+                        
+                        // Liberar memoria
+                        imagedestroy($source);
+                        imagedestroy($thumb);
+                        
+                        $client->image = $imagePath;
+                        $client->save();
+                    } catch (\Exception $e) {
+                        throw new \Exception("Error processing image: " . $e->getMessage());
+                    }
+                }
+
+
+
+            } catch (\Exception $e) {
+                throw new \Exception("Error processing image: " . $e->getMessage());
+            }
         }
-    }
 
+        DB::commit();
 
-     
+        AuditHelper::log('Cliente creado', [
+            'action' => 'create',
+            'client_id' => $client->id,
+            'data' => $client->toArray(),
+            'section' => 'clients'
+        ]);        
 
-
-
-
-    public function storeOLD(ClientRequest $request): RedirectResponse
-    {
-        Client::create($request->validated());
 
         return Redirect::route('clients.index')
             ->with('success', 'Client created successfully.');
+
+    } catch (\Illuminate\Validation\ValidationException $e) {
+        DB::rollBack();
+        return Redirect::back()
+            ->withErrors($e->validator)
+            ->withInput();
+
+    } catch (\Exception $e) {
+        DB::rollBack();
+        \Log::error('Error creating client: ' . $e->getMessage());
+        
+        return Redirect::route('clients.create')
+            ->with('error', 'Error creating client: ' . $e->getMessage())
+            ->withInput();
     }
+}
 
     /**
      * Display the specified resource.
@@ -145,8 +223,11 @@ class ClientController extends Controller
     {
         $client = Client::find($id);
         $divitions = Divition::all();
+        $countries = Country::all();
+        $linkPrev = $this->linkPrev = 'Inicio';
+        $linkCurrent = $this->linkCurrent = 'Crear clientes'; 
 
-        return view('modules.client.edit', compact('client','divitions'));
+        return view('modules.client.edit', compact('client','divitions','countries', 'linkPrev', 'linkCurrent'));
     }
 
     /**
@@ -156,15 +237,32 @@ class ClientController extends Controller
     {
         $client->update($request->validated());
 
+        AuditHelper::log('Cliente actualizado', [
+            'action' => 'update',
+            'client_id' => $client->id,
+            'old_data' => $oldData,
+            'new_data' => $client->fresh()->toArray(),
+            'section' => 'clients'
+        ]);        
+
         return Redirect::route('clients.index')
             ->with('success', 'Client updated successfully');
     }
 
     public function destroy($id): RedirectResponse
     {
-        Client::find($id)->delete();
+        $client = Client::find($id);
+        $clientData =  $client->toArray();
+        $client->delete();
+
+        AuditHelper::log('Cliente eliminado', [
+            'action' => 'delete',
+            'deleted_data' => $clientData,
+            'section' => 'countries'
+        ]);        
 
         return Redirect::route('clients.index')
             ->with('success', 'Client deleted successfully');
     }
+
 }
