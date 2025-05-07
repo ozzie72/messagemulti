@@ -58,7 +58,8 @@
 
 		<!-- Head Libs -->
 		<script src="{{asset('assets/vendor/modernizr/modernizr.js')}}"></script>
-		@vite(['resources/css/app.css', 'resources/js/app.js'])
+		 
+		{{-- @vite(['resources/css/app.css', 'resources/js/app.js']) --}}
 		@fluxAppearance
 		@livewireStyles
 	</head>

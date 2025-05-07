@@ -58,7 +58,7 @@ class Client extends Model
         'port', 
         'server_user', 
         'server_pass', 
-        'image', 
+//        'image', 
         'status', 
         'divition_id', 
         'department_id', 

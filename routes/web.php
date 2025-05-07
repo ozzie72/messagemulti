@@ -17,6 +17,8 @@ use App\Http\Controllers\LogController;
 
 use App\Http\Controllers\PdfController; 
 
+use App\Livewire\Clients\CreateClient;
+
 Route::get('/', function () {
     return view('welcome');
 })->name('home');
@@ -73,8 +75,4 @@ Route::get('/users/{user}/confirm', [UserController::class, 'confirm'])
 Route::get('/users/{user}/confirmed', [UserController::class, 'confirmed'])
 ->name('user.confirmed');
 
-
-
 require __DIR__.'/auth.php';
-
-
