@@ -1,10 +1,13 @@
 <!doctype html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="fixed">
+<html class="fixed">
 	
 @include('partials.head')
 @stack('styles')
 
-<body class="alternative-font-4 loading-overlay-showing" data-plugin-page-transition data-loading-overlay data-plugin-options="{'hideDelay': 100}" >
+<body>
+    <section class="body">
+
+
     <div class="loading-overlay">
         <div class="bounce-loader">
             <div class="bounce1"></div>
@@ -25,11 +28,16 @@
             @include('partials.heading')
             @yield('content')
         </section>
-        @fluxScripts
+
         @livewireScripts
     </div>
-     <!-- Full Screen Search Start -->
-     <div class="modal fade" id="searchModal" tabindex="-1">
+
+    
+
+    </section>
+
+         <!-- Full Screen Search Start -->
+         <div class="modal fade" id="searchModal" tabindex="-1">
         <div class="modal-dialog modal-lg">
             <div class="modal-content bg-primary" >
                 <div class="modal-header border-0">
@@ -41,7 +49,9 @@
         </div>
     </div>
     <!-- Full Screen Search End -->
-    
+
+
+
     @include('partials.footer')
     
     

@@ -9,9 +9,13 @@
                 </a>
             </li>
 
-            <li><span>{{$linkPrev}}</span></li>
+            @isset($linkPrev)
+                <li><span>{{ $linkPrev }}</span></li>
+            @endisset
 
-            <li><span>{{$linkCurrent}}</span></li>
+            @isset($linkCurrent)
+                <li><span>{{ $linkCurrent }}</span></li>
+            @endisset
 
         </ol>
     </div>

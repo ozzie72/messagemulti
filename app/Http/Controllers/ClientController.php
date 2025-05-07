@@ -235,6 +235,7 @@ class ClientController extends Controller
      */
     public function update(ClientRequest $request, Client $client): RedirectResponse
     {
+        
         $client->update($request->validated());
 
         AuditHelper::log('Cliente actualizado', [
