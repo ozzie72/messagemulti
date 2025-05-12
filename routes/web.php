@@ -17,7 +17,7 @@ use App\Http\Controllers\LogController;
 
 use App\Http\Controllers\PdfController; 
 
-use App\Livewire\Clients\CreateClient;
+//use App\Livewire\Clients\CreateClient;
 
 Route::get('/', function () {
     return view('welcome');

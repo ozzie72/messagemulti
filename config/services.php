@@ -35,4 +35,13 @@ return [
         ],
     ],
 
+    'remote_api' => [
+        'url' => env('REMOTE_API_URL'),
+        'login_url' => env('REMOTE_API_LOGIN_URL'), // Añadir esta línea
+        'email' => env('REMOTE_API_USER_EMAIL'),   // Añadir esta línea
+        'password' => env('REMOTE_API_USER_PASSWORD'), // Añadir esta línea
+        'device_name' => env('REMOTE_API_DEVICE_NAME', 'local_app'), // Añadir esta línea
+    ],
+
+
 ];
