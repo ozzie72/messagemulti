@@ -2,7 +2,7 @@
 
 namespace App\Http\Middleware;
 
-use App\Helpers\AuditHelper;
+use App\Helpers\AuditLogger;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -37,7 +37,7 @@ class AuditRequests
         $status = $response->getStatusCode();
         
         if (in_array($method, ['POST', 'PUT', 'PATCH', 'DELETE'])) {
-            AuditHelper::log(
+            AuditLogger::log(
                 operation: "{$method} {$request->path()}",
                 details: [
                     'status' => $status,

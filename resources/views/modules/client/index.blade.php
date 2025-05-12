@@ -7,8 +7,7 @@
 </style>
 @endpush
 @section('content')
- 
-   
+
     <section role="main" >
         <div class="row">
             <div class="col-sm-12">
@@ -20,11 +19,11 @@
                                 {{ __('Clients') }}
                             </span>
 
-                             <div class="float-right">
+                            <div class="float-right">
                                 <a href="{{ route('clients.create') }}" class="btn btn-primary btn-sm float-right"  data-placement="left">
-                                  {{ __('Create New') }}
+                                    {{ __('Create New') }}
                                 </a>
-                              </div>
+                            </div>
                         </div>
                     </div>
                     <div class="card-body bg-white">
@@ -50,9 +49,11 @@
             </div>
         </div>
     </section>
-    @section('scripts')
+@endsection
+
+@push('scripts')
     <script>
-    
+
     $(document).ready(function() {
         // Inicializar DataTable
         var table = $('#clients-table').DataTable({
@@ -112,7 +113,6 @@
             }
         });
     });
-    </script>
-    @endsection
-@endsection
 
+</script>
+@endpush

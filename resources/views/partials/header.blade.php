@@ -106,7 +106,19 @@
                         <a role="menuitem" tabindex="-1" href="{{route('settings.password')}}"><i class="bx bx-low-vision"></i> Cambiar contraseña</a>
                     </li>
                     <li>
-                        <a role="menuitem" tabindex="-1" href="{{route('logout')}}"><i class="bx bx-power-off"></i> Salir del sistema</a>
+
+                        <!--a role="menuitem" tabindex="-1" href="{{route('logout')}}"><i class="bx bx-power-off"></i> Salir del Sistema</a-->
+
+                        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">@csrf</form>
+
+                        <a
+                            href="#"
+                            onclick="event.preventDefault();
+                            document.getElementById('logout-form').submit();"> 
+                            <i class="bx bx-power-off"></i> Salir del Sistema
+                        </a>                        
+
+
                     </li>
                 </ul>
             </div>

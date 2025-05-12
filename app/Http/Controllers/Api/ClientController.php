@@ -103,4 +103,28 @@ class ClientController extends Controller
         $client->delete();
         return response()->json(null, 204);
     }
+
+/**
+     * Search clients by company name.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \App\Http\Resources\ClientCollection
+     */
+    public function searchByCompany(Request $request)
+    {
+        $searchTerm = $request->input('company');
+
+        if (empty($searchTerm)) {
+             // Return an empty collection if no search term is provided
+            return new ClientCollection(Client::paginate());
+        }
+
+        $clients = Client::with(['country', 'state', 'city', 'divition', 'department'])
+            ->where('company', 'LIKE', '%' . $searchTerm . '%')
+            ->paginate();
+
+        return new ClientCollection($clients);
+    }
+
+
 }

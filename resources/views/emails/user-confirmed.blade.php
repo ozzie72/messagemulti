@@ -15,7 +15,7 @@
     <h3>Gracias!</h3>
     <p>Su cuenta ha sido activada satisfactoriamente. Puede iniciar sesión con las credenciales proporcionadas.</p>
     <br>
-    <a href="http://127.0.0.1:8000"></a>
+    <a href="{{ config('app.url') }}"></a>
     <br>
     {{ config('app.name') }}
 </body>

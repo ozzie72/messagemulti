@@ -19,6 +19,11 @@ Route::middleware('auth:sanctum')->group(function () {
         ->name('api.users.verify-email');
     
     // Rutas API para clientes
+
+    // Ruta personalizada para buscar clientes por compañía
+
+    Route::get('/clients/search/company', [ClientController::class, 'searchByCompany'])->name('api.clients.searchByCompany');
+    
     Route::apiResource('clients', ClientController::class)
         ->names([
             'index' => 'api.clients.index',

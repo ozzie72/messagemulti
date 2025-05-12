@@ -19,11 +19,11 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 
-use App\Helpers\AuditHelper;
+//use App\Helpers\AuditHelper;
 
 class UserController extends Controller
 {
-   
+
     public function index(Request $request)
     {
         if ($request->ajax()) {
@@ -150,21 +150,6 @@ class UserController extends Controller
         return redirect('/')->with('message', 'La salida del sistema se completo.');
     }
     
-       
-
-    public function OLDconfirm(Request $request, User $user)
-    {
-        if (!$request->hasValidSignature()) {
-            return redirect()->route('home')->with('error', 'El enlace de confirmación no es válido o ha expirado.');
-        }
-
-        $user->email_verified_at = now();
-        $user->save();
-
-        AuditHelper::log('user_confirmed', 'El usuario confirmó su cuenta', $user);
-
-        return redirect()->route('home')->with('success', 'Tu cuenta ha sido verificada exitosamente.');
-    }
 
     public function confirm(Request $request, User $user)
     {
@@ -178,20 +163,14 @@ class UserController extends Controller
     
         $user->markEmailAsVerified();
     
-        AuditHelper::log('user_confirmed', 'El usuario confirmó su cuenta', $user);
+//        AuditHelper::log('user_confirmed', 'El usuario confirmó su cuenta', $user);
     
         return redirect()->route('dashboard')->with('success', 'Tu cuenta ha sido verificada exitosamente.');
     }
-
-
-
-
-
 
     public function confirmed(Request $request, User $user)
     {
         return redirect()->route('logout');
     }
-
 
 }
